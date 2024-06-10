@@ -1,0 +1,711 @@
+﻿@model TutorAppAPI.ViewModel.TutorRegisterViewModel
+
+@{
+    ViewData["Title"] = "Tutor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .image-container  {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+        .image-container img {
+            width: 150px; /* Adjust the size as needed */
+            height: 150px; /* Adjust the size as needed */
+            border-radius: 50%; /* Make the image circular */
+            object-fit: cover; /* Ensure the image covers the circle area */
+        }
+
+    #file-input {
+        display: block;
+        margin: 0 auto;
+        margin-top: 20px;
+    }
+</style>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-default">
+            <div class="card-body p-0">
+                <div class="bs-stepper">
+                    <div class="bs-stepper-header" role="tablist">
+                        <!-- your steps here -->
+                        <div class="step" data-target="#logins-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="logins-part" id="logins-part-trigger">
+                                <span class="bs-stepper-circle">1</span>
+                                <span class="bs-stepper-label">Account Info</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#tutorpref-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+                                <span class="bs-stepper-circle">2</span>
+                                <span class="bs-stepper-label">Tutor Preferences</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#agencymanager-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+                                <span class="bs-stepper-circle">3</span>
+                                <span class="bs-stepper-label">Education And Qualifications</span>
+                            </button>
+                        </div>
+                        <div class="line"></div>
+                        <div class="step" data-target="#information-part">
+                            <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+                                <span class="bs-stepper-circle">4</span>
+                                <span class="bs-stepper-label">Profile</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="bs-stepper-content">
+                        <!-- your steps content here -->
+                        <div id="logins-part" class="content" role="tabpanel" aria-labelledby="logins-part-trigger">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.Name"></label>
+                                        <input type="text" asp-for="AccountInfo.Name" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.Name" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.Email"></label>
+                                        <input type="text" asp-for="AccountInfo.Email" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.Email" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.MobileNumber">Mobile Number:</label>
+                                        <input type="text" asp-for="AccountInfo.MobileNumber" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.MobileNumber" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.Password">Password:</label>
+                                        <input type="password" asp-for="AccountInfo.Password" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.Password" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.PasswordConfirm">Confirm Password:</label>
+                                        <input type="password" asp-for="AccountInfo.PasswordConfirm" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.PasswordConfirm" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.NRIC">NRIC:</label>
+                                        <input type="text" asp-for="AccountInfo.NRIC" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.NRIC" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.Citizenship">Citizenship:</label>
+                                        <input type="text" asp-for="AccountInfo.Citizenship" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.Citizenship" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.DateofBirth">Date of Birth:</label>
+                                        <input type="date" asp-for="AccountInfo.DateofBirth" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.DateofBirth" class="text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.Gender">Gender:</label>
+                                        <select id="Gender" name="Gender" asp-for="AccountInfo.Gender" class="form-control">
+                                            <option value="Male">Male</option>
+                                            <option value="Female">Female</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="AccountInfo.Race">Race:</label>
+                                        <input type="text" asp-for="AccountInfo.Race" class="form-control" />
+                                        <span asp-validation-for="AccountInfo.Race" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="stepper.next()">Next</button>
+                        </div>
+
+                        <div id="tutorpref-part" class="content" role="tabpanel" aria-labelledby="tutorpref-part-trigger">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card card-outline card-warning">
+                                        <div class="card-header">
+                                            <h3 class="card-title"><b>Tutoring Preferences</b></h3>
+                                        </div>
+                                        <div class="card-header">
+                                            <h6 class="card-title text-muted">Subjects You Can Teach</h6>
+                                        </div>
+                                        
+                                        <!-- /.card-header -->
+                                        <div class="card-body">
+                                            <p class="card-text text-muted">
+                                                Click the tabs to scroll through different levels & select the subjects you can teach
+                                            </p>
+                                            <!-- we are adding the accordion ID so Bootstrap's collapse plugin detects it -->
+                                            <div id="accordion">
+
+                                                @foreach (var tutorLevel in Model.TutoringPrefences.TutorLevels)
+                                                {
+                                                    <div class="card card-secondary">
+                                                        <div class="card-header">
+                                                            <h4 class="card-title w-100">
+                                                                <a class="d-block w-100" data-toggle="collapse" href="#collapse@(tutorLevel._id)">
+                                                                    @tutorLevel.LevelName <!-- Use the level name or any other property you want to display -->
+                                                                </a>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="collapse@(tutorLevel._id)" class="collapse" data-parent="#accordion">
+                                                            <div class="card-body">
+
+                                                                <div class="form-group">
+                                                                    @foreach (var subject in Model.TutoringPrefences.TutorSubject.Where(_ => _.TutorLevelID == tutorLevel._id.ToString()))
+                                                                    {
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="checkbox" name="selectedSubjects" value="@subject._id.ToString()" id="subject@(subject._id)">
+                                                                            <label class="form-check-label" for="subject@(subject._id)">
+                                                                                @subject.Name
+                                                                            </label>
+                                                                        </div>
+                                                                    }
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="card card-outline card-warning">
+                                                <div class="card-header">
+                                                    <h3 class="card-title">Experience In Special Needs? (Leave Blank If None)</h3>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="form-group">
+
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="Dyslexia" value="Dyslexia" id="Dyslexia">
+                                                            <label class="form-check-label" for="Experience">
+                                                                Dyslexia
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="Autism Spectrum Disorder (ASD)" value="Autism Spectrum Disorder (ASD)" id="Autism Spectrum Disorder (ASD)">
+                                                            <label class="form-check-label" for="Experience">
+                                                                Autism Spectrum Disorder (ASD)
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="ADHD" value="ADHD" id="ADHD">
+                                                            <label class="form-check-label" for="Experience">
+                                                                ADHD
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="Anger Management" value="Anger Management" id="Anger Management">
+                                                            <label class="form-check-label" for="Experience">
+                                                                Anger Management
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="Slow Learner" value="Slow Learner" id="Slow Learner">
+                                                            <label class="form-check-label" for="Experience">
+                                                                Slow Learner
+                                                            </label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="checkbox" name="Down Syndrome" value="Down Syndrome" id="Down Syndrome">
+                                                            <label class="form-check-label" for="Experience">
+                                                                Down Syndrome
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="body box full">
+                                                <div class="form-group">
+                                                    <label for="rate" class="mb-0 mt-2 d-inline-block">Include:</label>
+                                                    <br />
+                                                    <p class="small pb-1 pt-2 text-muted d-inline-block"><i class="fa fa-check"></i> No. of special needs student taught and description of their ailment(s)</p><br />
+                                                    <p class="small pb-2 text-muted d-md-inline-block"><i class="fa fa-check"></i> What methodologies /strategies you have implemented to teach them effectively</p>
+                                                    <div class="col-sm-12 p-0">
+                                                        <textarea cols="120" id="id_special_needs_experience" maxlength="1500" name="special_needs_experience" rows="3" class="control-form mt-0"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-errors">
+                                                </div>
+                                            </div>
+                                            <div class="card card-outline card-warning">
+                                                <div class="card-header">
+                                                    <h3 class="card-title"><b>Preferred Tutoring Location(s)</b></h3>
+                                                    <br>
+                                                    <small>You may select MULTIPLE locations</small>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="form-group">
+                                                        @foreach (var item in Model.TutorLocations)
+                                                        {
+                                                            <div class="custom-control cont-CheckBox">
+                                                                <input name="locations" id="id_@item._id" type="checkbox" value="1" class="custom-control-input">
+                                                                <label class="custom-control-label" for="id_@item._id">
+                                                                    <span>
+                                                                        <strong class="next-line">@item.Zone</strong>
+                                                                        @item.Location
+                                                                    </span>
+                                                                </label>
+                                                            </div>
+                                                        }
+
+
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            
+                                            
+
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <!-- /.card -->
+                                    <button class="btn btn-primary float-left" onclick="stepper.previous()">Previous</button>
+                                    <button class="btn btn-primary  float-right" onclick="stepper.next()">Next</button>
+                                </div>
+                           
+                            </div>
+                            
+
+                        </div>
+
+                        <div id="agencymanager-part" class="content" role="tabpanel" aria-labelledby="agencymanager-part-trigger">
+                            <div class="row">
+                                <div class="form-group">
+                                    <label asp-for="EducationLevel">Education Level:</label>
+                                    <select id="EducationLevel" name="EducationLevel" asp-for="EducationLevel" class="form-control select2" multiple="multiple" data-placeholder="Select a Level">
+                                        @foreach (var educationLevel in Model.EducationLevel)
+                                        {
+                                            <option id="id@(educationLevel._id)" value="@educationLevel.Name">@educationLevel.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label asp-for="TutorCategory">Tutor Category:</label>
+                                    <select id="TutorCategory" name="TutorCategory" asp-for="TutorCategory" class="form-control select2" multiple="multiple" data-placeholder="Select a Category">
+                                        @foreach (var tutorCategory in Model.TutorCategory)
+                                        {
+                                            <option id="id@(tutorCategory._id)" value="@tutorCategory.Name">@tutorCategory.Name</option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="card card-outline card-warning">
+                                    <div class="row">
+                                        <h4><b>Taught at:</b></h4>
+                                        <p class="light"><small>Type to search and select from the dropdown menu. If your school is not listed here, leave this blank.</small></p>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            
+
+                                        <label asp-for="TutorSchool">Schools:</label>
+                                            <select id="TutorSchools" name="TutorSchools" asp-for="TutorSchool" class="form-control select2" multiple="multiple" data-placeholder="Select a School">
+                                            @foreach (var tutorSchools in Model.TutorSchool)
+                                            {
+                                                <option id="id@(tutorSchools._id)" value="@tutorSchools.Name">@tutorSchools.Name</option>
+                                            }
+                                            </select>
+                                       </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <label for="From">From:</label>
+                                            <select id="From" name="From" for="From" class="form-control select2" multiple="multiple" data-placeholder="Select a From">
+                                                <option id="formop" value="Q">A1</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 col-sm-4">
+                                            <label for="To">To:</label>
+                                            <select id="To" name="To" for="To" class="form-control select2" multiple="multiple" data-placeholder="">
+                                                <option id="formo" value="Q">A1</option>
+                                            </select>
+
+                                        </div>                                        
+                                    </div>
+                                    <br />
+                                    <div class="row">
+                                    <div class="col-md-2">
+                                        <button class="btn btn-primary float-left ">Add School</button>
+                                    </div>
+                                    </div>
+                                    <br />
+                                </div>
+
+                                <div class="card">
+                                    <!-- /.card-header -->
+                                    <div class="card-body">
+                                        <!-- we are adding the accordion ID so Bootstrap's collapse plugin detects it -->
+                                        <div id="accordion">
+                                            @foreach (var tutorgrade in Model.TutorGrade)
+                                            {
+                                                <div class="card card-secondary">
+                                                    <div class="card-header">
+                                                        <h4 class="card-title w-100">
+                                                            <a class="d-block w-100" data-toggle="collapse" href="#collapse@(tutorgrade._id)">
+                                                                @tutorgrade.Name <!-- Use the level name or any other property you want to display -->
+                                                            </a>
+                                                        </h4>
+                                                    </div>
+                                                    <div id="collapse@(tutorgrade._id)" class="collapse" data-parent="#accordion">
+                                                        <div class="card-body">
+                                                            <div class="form-group">
+                                                                <label asp-for="SchoolGrade">Schools:</label>
+                                                                <select id="SchoolGrade@(tutorgrade._id)" name="TutorSchools" asp-for="SchoolGrade" class="form-control select2" multiple="multiple" data-placeholder="Select a School">
+                                                                    @foreach (var tutorSchools in Model.TutorSchool)
+                                                                    {
+                                                                        <option id="SchoolGradeid@(tutorSchools._id)" value="@tutorSchools.Name">@tutorSchools.Name</option>
+                                                                    }
+                                                                </select>
+                                                                <br />
+
+                                                                
+                                                                    <div class="class-header">
+                                                                        <h6>Graduation date (can be postdated if still studying):</h6>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <label>Date:</label>
+                                                                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                                                            <input type="text" class="datetimepicker-input" data-target="#reservationdate" />
+                                                                            <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                        <label asp-for="EducationAndQualifications">English</label>
+                                                                        <select id="English" name="Gender" asp-for="EducationAndQualifications" class="form-control">
+                                                                            <option value="A*">A*</option>
+                                                                            <option value="A">A</option>
+                                                                            <option value="B">B</option>
+                                                                            <option value="C">C</option>
+                                                                            <option value="D">D</option>
+                                                                            <option value="E">E</option>
+                                                                            <option value="U">U</option>
+                                                                            <option value="AL1">AL1</option>
+                                                                            <option value="AL2">AL2</option>
+                                                                            <option value="AL3">AL3</option>
+                                                                            <option value="AL4">AL4</option>
+                                                                            <option value="AL5">AL5</option>
+                                                                            <option value="AL6">AL6</option>
+                                                                            <option value="AL7">AL7</option>
+                                                                            <option value="AL8">AL8</option>
+                                                                        </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                        <label asp-for="EducationAndQualifications">Math</label>
+                                                                        <select id="Math" name="Math" asp-for="EducationAndQualifications" class="form-control">
+                                                                            <option value="A*">A*</option>
+                                                                            <option value="A">A</option>
+                                                                            <option value="B">B</option>
+                                                                            <option value="C">C</option>
+                                                                            <option value="D">D</option>
+                                                                            <option value="E">E</option>
+                                                                            <option value="U">U</option>
+                                                                            <option value="AL1">AL1</option>
+                                                                            <option value="AL2">AL2</option>
+                                                                            <option value="AL3">AL3</option>
+                                                                            <option value="AL4">AL4</option>
+                                                                            <option value="AL5">AL5</option>
+                                                                            <option value="AL6">AL6</option>
+                                                                            <option value="AL7">AL7</option>
+                                                                            <option value="AL8">AL8</option>
+                                                                        </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                        <label asp-for="EducationAndQualifications">Science</label>
+                                                                        <select id="Science" name="Science" asp-for="EducationAndQualifications" class="form-control">
+                                                                            <option value="A*">A*</option>
+                                                                            <option value="A">A</option>
+                                                                            <option value="B">B</option>
+                                                                            <option value="C">C</option>
+                                                                            <option value="D">D</option>
+                                                                            <option value="E">E</option>
+                                                                            <option value="U">U</option>
+                                                                            <option value="AL1">AL1</option>
+                                                                            <option value="AL2">AL2</option>
+                                                                            <option value="AL3">AL3</option>
+                                                                            <option value="AL4">AL4</option>
+                                                                            <option value="AL5">AL5</option>
+                                                                            <option value="AL6">AL6</option>
+                                                                            <option value="AL7">AL7</option>
+                                                                            <option value="AL8">AL8</option>
+                                                                        </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label for="Chinese">Chinese</label>
+                                                                            <select id="Chinese" name="Chinese" for="EducationAndQualifications" class="form-control">
+                                                                                <option value="A*">A*</option>
+                                                                                <option value="A">A</option>
+                                                                                <option value="B">B</option>
+                                                                                <option value="C">C</option>
+                                                                                <option value="D">D</option>
+                                                                                <option value="E">E</option>
+                                                                                <option value="U">U</option>
+                                                                                <option value="AL1">AL1</option>
+                                                                                <option value="AL2">AL2</option>
+                                                                                <option value="AL3">AL3</option>
+                                                                                <option value="AL4">AL4</option>
+                                                                                <option value="AL5">AL5</option>
+                                                                                <option value="AL6">AL6</option>
+                                                                                <option value="AL7">AL7</option>
+                                                                                <option value="AL8">AL8</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label for="EducationAndQualifications">Higher Chinese</label>
+                                                                            <select id="HigherChinese" name="HigherChinese" for="EducationAndQualifications" class="form-control">
+                                                                                <option value="A*">A*</option>
+                                                                                <option value="A">A</option>
+                                                                                <option value="B">B</option>
+                                                                                <option value="C">C</option>
+                                                                                <option value="D">D</option>
+                                                                                <option value="E">E</option>
+                                                                                <option value="U">U</option>
+                                                                                <option value="AL1">AL1</option>
+                                                                                <option value="AL2">AL2</option>
+                                                                                <option value="AL3">AL3</option>
+                                                                                <option value="AL4">AL4</option>
+                                                                                <option value="AL5">AL5</option>
+                                                                                <option value="AL6">AL6</option>
+                                                                                <option value="AL7">AL7</option>
+                                                                                <option value="AL8">AL8</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label for="CreativeWriting">Creative Writing</label>
+                                                                            <select id="CreativeWriting" name="Chinese" for="CreativeWriting" class="form-control">
+                                                                                <option value="A*">A*</option>
+                                                                                <option value="A">A</option>
+                                                                                <option value="B">B</option>
+                                                                                <option value="C">C</option>
+                                                                                <option value="D">D</option>
+                                                                                <option value="E">E</option>
+                                                                                <option value="U">U</option>
+                                                                                <option value="AL1">AL1</option>
+                                                                                <option value="AL2">AL2</option>
+                                                                                <option value="AL3">AL3</option>
+                                                                                <option value="AL4">AL4</option>
+                                                                                <option value="AL5">AL5</option>
+                                                                                <option value="AL6">AL6</option>
+                                                                                <option value="AL7">AL7</option>
+                                                                                <option value="AL8">AL8</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <label for="Phonics">Phonics</label>
+                                                                            <select id="Phonics" name="Phonics" for="Phonics" class="form-control">
+                                                                                <option value="A*">A*</option>
+                                                                                <option value="A">A</option>
+                                                                                <option value="B">B</option>
+                                                                                <option value="C">C</option>
+                                                                                <option value="D">D</option>
+                                                                                <option value="E">E</option>
+                                                                                <option value="U">U</option>
+                                                                                <option value="AL1">AL1</option>
+                                                                                <option value="AL2">AL2</option>
+                                                                                <option value="AL3">AL3</option>
+                                                                                <option value="AL4">AL4</option>
+                                                                                <option value="AL5">AL5</option>
+                                                                                <option value="AL6">AL6</option>
+                                                                                <option value="AL7">AL7</option>
+                                                                                <option value="AL8">AL8</option>
+                                                                            </select>
+                                                                        </div>
+
+                                                                    </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary float-left" onclick="stepper.previous()">Previous</button>
+                            <button class="btn btn-primary  float-right" onclick="stepper.next()">Next</button>
+                            <br />
+                        </div>
+
+                        <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
+                            <div class="card card-outline card-warning">
+                                <div class="card-header">
+                                    <h3 class="card-title">Profile And Experiences</h3>
+                                </div>
+
+                                <div class="card-body">
+                            <div class="form-group">
+                                <label for="exampleInputFile">Profile Image</label>
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="userInputFile">
+                                        <label class="custom-file-label" for="exampleInputFile">Choose Picture</label>
+                                            </div>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">Upload</span>
+                                     </div>
+                                    </div>
+                                  </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card card-primary card-outline">
+                                            <div class="card-body box-profile">
+                                                <div class="text-center">
+                                                    <div class="image-container img-fluid img-circle" id="image-container"></div>
+                                                </div>
+                                            </div>
+                                      </div>
+                                  </div>
+                                        <div class="col-md-8">
+                                            <p>Maximum file size of 100 MB, if your file size is too big, 
+                                                try resizing it smaller using Paint. Or, use an online image compressor tool.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="card card-outline card-warning">
+                                <div class="card-header">
+                                    <h3 class="card-title">Experiences</h3>
+                                </div>
+
+                                <div class="card-body">
+                                    <p class="text-muted"><small>A better portfolio will increase your chances of getting assignments.
+                                        </small></p>
+                                    <p class="text-muted"><small>Please include:</small></p>
+                                    <p class="text-muted"><small>- Years of tutoring experience, number of students taught & their improvements</small></p>
+                                    <p class="text-muted"><small>- Relevant subject grades</small></p>
+                                    <p class="text-muted"><small>- Relevant subject grades</small></p>
+                                    <p class="text-muted"><small>- Other teaching experiences or academic achievements (tuition centre, relief teaching, Dean's list, scholarship etc.)</small></p>
+                                    <textarea cols="120" id="id_experience" maxlength="1500" name="id_experience" rows="3" class="control-form mt-0"></textarea>
+                                    <p class="text-muted">
+                                        <small>Note: Upon demand, you may need to show evidence to support your portfolio. If you leave this blank, it will be difficult to match you with assignments. Please avoid writing a long description of your passion in teaching. Be concise and succinct.</small>
+                                    </p>
+                                </div>
+                            </div>
+
+                             <div class="card card-outline card-warning">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        Upload Documents
+                                    </h3>
+                                </div>
+
+                                <div class="card-body">
+                                    <p class="text-muted">
+                                        <small>
+                                            You are STRONGLY encouraged to upload your documents. Our coordinators will prioritize shortlisting tutors who have provided us with verified credentials
+                                        </small>
+                                    </p>
+                                    <p class="text-muted">
+                                        <small>
+                                            Please upload the following documents:
+                                        </small>
+                                    </p>
+                                    <p class="text-muted"><small>- Years of tutoring experience, number of students taught & their improvements</small></p>
+                                    <p class="text-muted">
+                                        <small>
+                                            - Result slips: for subjects that you want to teach
+                                        </small>
+                                    </p>
+                                    <p class="text-muted">
+                                        <small>
+                                            - Graduation certs: for your diploma/degrees
+                                        </small>
+                                    </p>
+                                    <p class="text-muted">
+                                        <small>
+                                            - NIE Certs/Teacher's Pass: for MOE teachers
+                                        </small>
+                                    </p>
+                                    <p class="text-muted">
+                                        <small>
+                                            Note: Limit of 5 files (image or PDF files, each with ~100MB file size limit)
+                                        </small>
+                                    </p>
+                                    <p class="text-muted">
+                                        <small>
+                                            We will not send your certificates to third parties without your consent. Click <a href="">here</a> to our privacy policy
+                                        </small>
+                                    </p>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <div class="input-group">
+                                            <div class="custom-file">
+                                                <input type="file" multiple class="custom-file-input" id="certInputFile">
+                                                <label class="custom-file-label" for="certInputFile">Choose files</label>
+                                            </div>
+                                            <div class="input-group-append">
+                                                <span class="input-group-text">Upload</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card card-primary card-outline">
+                                                <div class="card-body box-profile">
+                                                    <div class="text-center">
+                                                        <div class="image-container img-fluid img-circle" id="image-container-cert"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-primary" onclick="stepper.previous()">Previous</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+</div>
+<script>
+    document.getElementById('userInputFile').addEventListener('change', function (event) {
+        var file = event.target.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var imageContainer = document.getElementById('image-container');
+                imageContainer.innerHTML = '<img src="' + e.target.result + '" alt="Uploaded Image">';
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('certInputFile').addEventListener('change', function (event) {
+        var files = event.target.files;
+        var imageContainer = document.getElementById('image-container-cert');
+        imageContainer.innerHTML = ''; // Clear the container before adding new images
+
+        Array.from(files).forEach(function (file) {
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = 'Uploaded Image';
+                    imageContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    });
+    
+</script>

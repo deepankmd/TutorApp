@@ -1,0 +1,60 @@
+[
+    {
+		"Name": "Alice Johnson",
+        "Email": "alice.johnson@example.com",
+        "PhoneNumber": 1234567890,
+        "Action": "Create",
+        "Password": "password123"
+    },
+    {
+		"Name": "Admin",
+        "Email": "bob.smith@example.com",
+        "PhoneNumber": 9876543210,
+        "Action": "Update",
+        "Password": "123458"
+    },
+    {
+        "Name": "Charlie Brown",
+        "Email": "charlie.brown@example.com",
+        "PhoneNumber": 5551234567,
+        "Action": "Delete",
+        "Password": "password789"
+    },
+    {
+        "Name": "Diana Prince",
+        "Email": "diana.prince@example.com",
+        "PhoneNumber": 1112223333,
+        "Action": "Create",
+        "Password": "wonderwoman"
+    }
+]
+[
+    {
+		"Name": "Alice Johnson",
+        "Email": "alice.johnson@example.com",
+        "PhoneNumber": 1234567890,
+        "Action": "Create",
+        "Password": "password123"
+    },
+    {
+		"Name": "Admin",
+        "Email": "bob.smith@example.com",
+        "PhoneNumber": 9876543210,
+        "Action": "Update",
+        "Password": "123458"
+    },
+    {
+        "Name": "Charlie Brown",
+        "Email": "charlie.brown@example.com",
+        "PhoneNumber": 5551234567,
+        "Action": "Delete",
+        "Password": "password789"
+    },
+    {
+        "Name": "Diana Prince",
+        "Email": "diana.prince@example.com",
+        "PhoneNumber": 1112223333,
+        "Action": "Create",
+        "Password": "wonderwoman"
+    }
+]
