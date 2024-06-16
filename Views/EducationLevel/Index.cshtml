@@ -1,0 +1,87 @@
+﻿@model IEnumerable<EducationLevel>
+@{
+    ViewData["Title"] = "Education Level";
+}
+
+<h1>Education Level</h1>
+
+<p>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">Add New</button>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModal" data-id="@item._id">Edit</button>
+                    <form asp-action="Delete" asp-route-id="@item._id" method="post" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Add New Tutor Grade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="createFormContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editModalLabel">Edit Tutor Grade</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="editFormContainer"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#createModal').on('show.bs.modal', function (e) {
+                $.get('@Url.Action("Create")', function (data) {
+                    $('#createFormContainer').html(data);
+                });
+            });
+
+            $('#editModal').on('show.bs.modal', function (e) {
+                var button = $(e.relatedTarget);
+                var id = button.data('id');
+                $.get('@Url.Action("Edit")', { id: id }, function (data) {
+                    $('#editFormContainer').html(data);
+                });
+            });
+        });
+    </script>
+}

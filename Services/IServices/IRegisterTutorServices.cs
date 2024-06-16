@@ -5,9 +5,8 @@ namespace TutorAppAPI.Services.IServices
 {
     public interface IRegisterTutorServices
     {
-        Task<List<TutorLevels>> GetAllTutorLevelsAsync();
-
-        Task<TutorLevels> GetTutorLevelByIdAsync(ObjectId id);
+        Task<List<TutorLevel>> GetAllTutorLevelsAsync();
+        Task<TutorLevel> GetTutorLevelByIdAsync(ObjectId id);
         Task<List<AccountInfo>> GetAllAccountInfoAsync();
         Task<AccountInfo> GetAccountInfoByIdAsync(ObjectId id);
         Task<List<TutorSubject>> GetAllTutorSubjectAsync();
@@ -22,5 +21,10 @@ namespace TutorAppAPI.Services.IServices
         Task<TutorGrade> GetTutorGradeByIdAsync(ObjectId id);
         Task<List<TutorLocations>> GetAllTutorLocationsAsync();
         Task<TutorLocations> GetTutorLocationsByIdAsync(ObjectId id);
+        Task<List<TutorGradesSubject>> GetAllTutorGradesSubjectAsync();
+        Task<TutorGradesSubject> GetTutorGradesSubjectByIdAsync(ObjectId id);
+        Task<List<TutorGradeValues>> GetAllTutorGradeValuesAsync();
+        Task<TutorGradeValues> GetTutorGradeValuesByIdAsync(ObjectId id);
+        Tutors Create(Tutors tutor);
     }
 }

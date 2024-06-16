@@ -1,4 +1,4 @@
-using NuGet.Configuration;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using TutorAppAPI.Services;
 using TutorAppAPI.Services.IServices;
 using TutorAppAPI.Settings;
@@ -6,13 +6,38 @@ using TutorAppAPI.Settings;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
+var mongodbSetting = new MongoDbSettings();
+builder.Configuration.GetSection("MongoDbSettings").Bind(mongodbSetting);
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
+builder.Services.AddSingleton(new MongoContext(mongodbSetting.ConnectionString, mongodbSetting.DatabaseName));
 
 builder.Services.AddScoped<AdminService>();
-builder.Services.AddScoped<TutorService>();
+builder.Services.AddScoped<EducationLevelServices>();
+builder.Services.AddScoped<TutorCategoryServices>();
+builder.Services.AddScoped<TutorLevelServices>();
+builder.Services.AddScoped<TutorSubjectServices>();
+
 builder.Services.AddSingleton<IAccountInfoService, AccountInfoService>();
 builder.Services.AddSingleton<IRegisterTutorServices, RegisterTutorServices>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Admin/Login";
+        options.AccessDeniedPath = "/Admin/AccessDenied";
+    });
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true; // Make the session cookie essential
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -31,8 +56,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseSession();
 
 app.MapControllerRoute(
     name: "default",
