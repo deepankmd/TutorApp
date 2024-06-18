@@ -1,97 +1,145 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MongoDB.Driver;
+using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
 using TutorAppAPI.Services;
-
 
 namespace TutorAppAPI.Controllers
 {
     public class TutorsController : Controller
     {
-        //private readonly TutorService _tutorService;
+        private readonly MongoContext _context;
 
-        //public TutorsController(TutorService tutorService)
-        //{
-        //    _tutorService = tutorService;
-        //}
+        public TutorsController(MongoContext context)
+        {
+            _context = context;
+        }
 
-        //public IActionResult Index()
-        //{
-        //    var admins = _tutorService.Get();
-        //    return View(admins);
-        //}
+        public async Task<IActionResult> Index()
+        {
+            if (HttpContext.Session != null)
+            {
+                string userID = HttpContext.Session.GetString(UserConstants.UserID);
+                var tutors = await _context.Tutors.Find(_ => true).ToListAsync();
+                return View(tutors);
+            }
+            else
+            {
+                var tutors = await _context.Tutors.Find(_ => true).ToListAsync();
+                return View(tutors);
+            }
+        }
 
-        //public IActionResult Details(ObjectId id)
-        //{
-        //    var admin = _tutorService.Get(id);
-        //    if (admin == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(admin);
-        //}
+        public IActionResult Create()
+        {
+            PopulateDropDowns();
+            return PartialView();
+        }
 
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+        [HttpPost]
+        public async Task<IActionResult> Create(Tutors tutors)
+        {
+            if (ModelState.IsValid)
+            {
+                await _context.Tutors.InsertOneAsync(tutors);
+                return RedirectToAction(nameof(Index));
+            }
+            PopulateDropDowns();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                id = HttpContext.Session.GetString("UserID");
+            }
+            var tutors = await _context.Tutors.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            if (tutors == null)
+            {
+                return NotFound();
+            }
+            PopulateDropDowns();
+
+            return PartialView(tutors);
+        }
 
         //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Create(Tutors tutor)
+        //public async Task<IActionResult> Edit(Tutors tutors)
         //{
         //    if (ModelState.IsValid)
         //    {
-        //        _tutorService.Create(tutor);
+        //        await _context.Tutors.ReplaceOneAsync(t => t._id == tutors._id, tutors);
         //        return RedirectToAction(nameof(Index));
         //    }
-        //    return View(tutor);
-        //}
-
-        //public IActionResult Edit(ObjectId id)
-        //{
-        //    var tutor = _tutorService.Get(id);
-        //    if (tutor == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(tutor);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult Edit(ObjectId id, Tutors tutor)
-        //{
-        //    if (id != tutor._id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        _tutorService.Update(id, tutor);
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(tutor);
-        //}
-
-        //public IActionResult Delete(ObjectId id)
-        //{
-        //    var tutor = _tutorService.Get(id);
-        //    if (tutor == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(tutor);
-        //}
-
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public IActionResult DeleteConfirmed(ObjectId id)
-        //{
-        //    _tutorService.Remove(id);
+        //    PopulateDropDowns();
         //    return RedirectToAction(nameof(Index));
         //}
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _context.Tutors.DeleteOneAsync(t => t._id.ToString() == id);
+            return RedirectToAction(nameof(Index));
+        }
+
+        private void PopulateDropDowns()
+        {
+            ViewBag.Gender = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Male", Text = "Male" },
+                new SelectListItem { Value = "Female", Text = "Female" }
+            }, "Value", "Text");
+
+            ViewBag.Nationality = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Singaporean/PR", Text = "Singaporean/PR" },
+                new SelectListItem { Value = "Foreigner", Text = "Foreigner" }
+            }, "Value", "Text");
+        }
+
+        public async Task<IActionResult> Profile(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                id = HttpContext.Session.GetString("UserID");
+            }
+            PopulateDropDowns();
+            var tutors = await _context.Tutors.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            if (tutors == null)
+            {
+                return NotFound();
+            }
+            return View(tutors);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(string id, Tutors tutors)
+        {
+            if (id != tutors._id.ToString())
+            {
+                return BadRequest();
+            }
+            PopulateDropDowns();
+            var tutorFromDatabase = await _context.Tutors.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            if (ModelState.IsValid)
+            {
+                tutorFromDatabase.Name = tutors.Name;
+                tutorFromDatabase.Email = tutors.Email;
+                tutorFromDatabase.MobileNumber = tutors.MobileNumber;
+                tutorFromDatabase.Citizenship = tutors.Citizenship;
+                tutorFromDatabase.NRIC = tutors.NRIC;
+                tutorFromDatabase.Gender = tutors.Gender;
+                tutorFromDatabase.Race = tutors.Race;
+
+                await _context.Tutors.ReplaceOneAsync(t => t._id == tutors._id, tutorFromDatabase);
+
+
+                return RedirectToAction(nameof(Profile), new { id = tutors._id.ToString() });
+            }
+            return View(tutors);
+        }
     }
 }
-

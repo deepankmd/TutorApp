@@ -8,18 +8,20 @@ namespace TutorAppAPI.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId _id { get; set; }
-        public string Title { get; set; }
-        public string ShortDescription { get; set; }
-        public string SubjectLooking { get; set; }
-        public string Description { get; set; }
+        public string Email { get; set; }
+        public string SubjectsToBeTutored { get; set; }
+        public string StudentLevel { get; set; }
+        public string FrequencyOfLessons { get; set; }
+        public string YourTuitionBudget { get; set; }
+        public DateTime TuitionStartDate { get; set; } = DateTime.UtcNow;
+        public string LengthOfCommitment { get; set; }
+        public DateTime AvailableTimings { get; set; } = DateTime.UtcNow;
         public string PreferredTutorGender { get; set; }
+        public string DescriptionOfNeeds { get; set; }
         public ObjectId ParentId { get; set; }
         public ObjectId TutorId { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-        public DateTime DueDate { get; set; }
-        public WorkingType WorkingType { get; set; }
-        public TutorLocations Location { get; set; }
-
+        public DateTime DueDate { get; set; } = DateTime.UtcNow;
     }
     public enum WorkingType
     {

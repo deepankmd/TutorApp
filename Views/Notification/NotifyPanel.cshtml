@@ -1,0 +1,27 @@
+﻿@model IEnumerable<Notification>
+@{
+    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
+    ViewData["Title"] = "Notifications";
+}
+<div class="row">
+
+@foreach (var notification in Model)
+{
+        <a href="#" class="dropdown-item">
+            <!-- Message Start -->
+            <div class="media">
+                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                <div class="media-body">
+                    <h3 class="dropdown-item-title">
+                        @notification.UserName
+                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                    </h3>
+                    <p class="text-sm">@notification.Subject...</p>
+                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.CreatedDate.ToString("dd MMM yyyy hh:mm") </p>
+                </div>
+            </div>
+            <!-- Message End -->
+        </a>
+        <div class="dropdown-divider"></div>
+}
+</div>

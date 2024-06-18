@@ -4,39 +4,73 @@
     Layout = "~/Views/Shared/_LayoutWithoutAnyMenu.cshtml";
     ViewData["Title"] = "Create Assignment";
 }
-<h6>Create Assignment</h6>
 
 <form asp-action="Create">
-    <div class="form-group">
-        <label asp-for="Title"></label>
-        <input asp-for="Title" class="form-control" />
+    <div id="createPopup">
+        <form asp-action="Create" method="post" id="createForm">
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubjectsToBeTutored">Subjects To Be Tutored</label>
+                <input asp-for="SubjectsToBeTutored" class="form-control" />
+                <span asp-validation-for="SubjectsToBeTutored" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StudentLevel">Student Level</label>
+                <input asp-for="StudentLevel" class="form-control" />
+                <span asp-validation-for="StudentLevel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FrequencyOfLessons">Frequency Of Lessons</label>
+                <input asp-for="FrequencyOfLessons" class="form-control" />
+                <span asp-validation-for="FrequencyOfLessons" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="YourTuitionBudget"></label>
+                <input asp-for="YourTuitionBudget" class="form-control" />
+                <span asp-validation-for="YourTuitionBudget" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TuitionStartDate">Tuition Start Date</label>
+                <input asp-for="TuitionStartDate" class="form-control" type="date" />
+                <span asp-validation-for="TuitionStartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LengthOfCommitment">Length Of Commitment</label>
+                <input asp-for="LengthOfCommitment" class="form-control" />
+                <span asp-validation-for="LengthOfCommitment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AvailableTimings">Available Timings</label>
+                <input asp-for="AvailableTimings" class="form-control" type="datetime-local" />
+                <span asp-validation-for="AvailableTimings" class="text-danger"></span>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="PreferredTutorGender">Preferred Tutor Gender</label>
+                <select asp-for="PreferredTutorGender" class="form-control">
+                    <option value="Any">Any</option>
+                    <option value="Prefer Female (but open to both genders)">Prefer Female (but open to both genders)</option>
+                    <option value="Prefer Male (but open to both genders)">Prefer Male (but open to both genders)</option>
+                    <option value="Strictly Male">Strictly Male</option>
+                    <option value="Strictly Female">Strictly Female</option>
+                </select>
+                <span asp-validation-for="PreferredTutorGender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DescriptionOfNeeds">Description Of Needs</label>
+                <textarea asp-for="DescriptionOfNeeds" class="form-control"></textarea>
+                <span asp-validation-for="DescriptionOfNeeds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DueDate">Due Date</label>
+                <input asp-for="DueDate" class="form-control" type="date" />
+                <span asp-validation-for="DueDate" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="ShortDescription">Short Description</label>
-        <input asp-for="ShortDescription" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="SubjectLooking">Subject Looking</label>
-        <input asp-for="SubjectLooking" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Description"></label>
-        <textarea asp-for="Description" class="form-control"></textarea>
-    </div>
-    <div class="form-group">
-        <label asp-for="DueDate">Due Date</label>
-        <input asp-for="DueDate" class="form-control" type="date" />
-    </div>
-    <div class="form-group">
-        <label asp-for="WorkingType">Working Type</label>
-        <input asp-for="WorkingType" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Location"></label>
-        <select asp-for="Location" class="form-control">
-            <option value="North">North</option>
-            <option value="South">South</option>
-        </select>
-    </div>
-    <button type="submit" class="btn btn-success">Create</button>
 </form>

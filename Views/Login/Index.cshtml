@@ -23,6 +23,10 @@
             <div class="form-group">
                 <button asp-controller="Login" asp-action="UserLogin" class="btn btn-primary">Login</button>
             </div>
+
+            <div class="form-group">
+                <span class="text-danger">@ViewData["ErrorMessage"]</span>
+            </div>
         </form>
     </div>
 </div>

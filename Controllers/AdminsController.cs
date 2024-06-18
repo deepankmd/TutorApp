@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Security.Claims;
+using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
 using TutorAppAPI.Services;
 
@@ -116,10 +117,10 @@ namespace TutorAppAPI.Controllers
             {
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role, "Admin")
+                new Claim(ClaimTypes.Role, UserConstants.AdminRole)
             };
 
-                HttpContext.Session.SetString("UserRole", "Admin");
+                HttpContext.Session.SetString(UserConstants.UserRole, UserConstants.AdminRole);
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
@@ -131,7 +132,10 @@ namespace TutorAppAPI.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                return RedirectToAction("Index", "Admin"); // Redirect to your admin home page.
+                var notification = await _context.Notification.Find(_ => _.NotificationType == NotificationType.admin).ToListAsync();
+
+                ViewBag.Notification = await _context.Notification.Find(_ => _.NotificationType == NotificationType.admin).ToListAsync();
+                return RedirectToAction("Index", "Admins"); // Redirect to your admin home page.
             }
 
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");

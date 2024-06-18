@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using TutorAppAPI.Models;
 using TutorAppAPI.Services;
 using TutorAppAPI.ViewModel;
 using MongoDB.Driver;
-using Microsoft.AspNetCore.Http;
+using TutorAppAPI.Helpers;
+using TutorAppAPI.Models;
 
 namespace TutorAppAPI.Controllers
 {
@@ -30,16 +30,17 @@ namespace TutorAppAPI.Controllers
             var userRecord = _context.ParentDetails
                 .Find(a => (a.Email == loginViewModel.Email || a.Mobile == int.Parse(loginViewModel.Email)) && a.Password == loginViewModel.Password);
 
-            if (userRecord.FirstOrDefault() != null)
+            if (userRecord?.FirstOrDefault() != null)
             {
                 var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role, "ParentL")
+                new Claim(ClaimTypes.Role, UserConstants.ParentDetails)
             };
-
-                HttpContext.Session.SetString("UserRole", "ParentDetails");
-                HttpContext.Session.SetString("UserID", userRecord.FirstOrDefault()._id.ToString());
-
+                var user = userRecord.FirstOrDefault();
+                HttpContext.Session.SetString(UserConstants.UserRole, UserConstants.ParentDetails);
+                HttpContext.Session.SetString(UserConstants.UserID, user._id.ToString());
+                HttpContext.Session.SetString(UserConstants.UserName, user.Name.ToString());
+                
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
                 {
@@ -51,22 +52,26 @@ namespace TutorAppAPI.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                return RedirectToAction("Profile", "ParentDetails");
+                return RedirectToAction(UserConstants.Profile, "ParentDetails");
             }
 
             else if (userRecord.FirstOrDefault() == null)
             {
                 var tutor = _context.Tutors
-                    .Find(a => (a.Email == loginViewModel.Email || a.MobileNumber == loginViewModel.PhoneNumber) && a.Password == loginViewModel.Password);
+                    .Find(a => (a.Email == loginViewModel.Email || a.MobileNumber == int.Parse(loginViewModel.Email)) && a.Password == loginViewModel.Password);
 
                 if (tutor.FirstOrDefault() != null)
                 {
                     var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Role, "TutorL")
+                new Claim(ClaimTypes.Role, UserConstants.TutorRole)
             };
 
-                    HttpContext.Session.SetString("UserRole", "TutorL");
+                    var user = tutor.FirstOrDefault();
+                    HttpContext.Session.SetString(UserConstants.UserRole, UserConstants.TutorRole);
+                    HttpContext.Session.SetString(UserConstants.UserID, user._id.ToString());
+                    HttpContext.Session.SetString(UserConstants.UserName, user.Name.ToString());
+
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var authProperties = new AuthenticationProperties
                     {
@@ -77,21 +82,21 @@ namespace TutorAppAPI.Controllers
                         CookieAuthenticationDefaults.AuthenticationScheme,
                         new ClaimsPrincipal(claimsIdentity),
                         authProperties);
-
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction(UserConstants.Profile, UserConstants.Tutors);
                 }
             }
             ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-            return View(userRecord);
+            return View("Index");
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             HttpContext.Session.Clear();
             HttpContext.Session = null;
-            return RedirectToAction("Login", "Admin");
+            return RedirectToAction("Index", "Login");
         }
     }
 }

@@ -15,8 +15,8 @@ namespace TutorAppAPI.ViewModel
         public List<TutorLocations> TutorLocations { get; set; }
         public List<string> EducationLevelSelected { get; set; }
         public List<string> TutorCategorySelected { get; set; }
-
-
+        public List<TutorGradesSubject> TutorGradesSubject { get; set; }
+        public List<TutorGradeValues> TutorGradeValues { get; set; }
     }
 
     public class TutorRegisterSaveViewModel

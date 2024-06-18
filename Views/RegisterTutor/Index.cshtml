@@ -25,7 +25,7 @@
         margin-top: 20px;
     }
 </style>
-<form asp-action="Register">
+<form asp-action="Register" enctype="multipart/form-data">
 <div class="row">
     <div class="col-md-12">
         <div class="card card-default">
@@ -291,7 +291,7 @@
 
                                 <div class="card">
                                     <div class="card-header">
-                                        <h4>Grades and Qualifications</h4>
+                                        <h5>Grades and Qualifications</h5>
                                     </div>
                                     <!-- /.card-header -->
                                     <div class="card-body">
@@ -335,62 +335,20 @@
                                                                     </div>
 
                                                                     <div class="row">
+                                                                        @foreach (var tutorGradesSubject in Model.TutorGradesSubject.Where(_ => _.GradeId == tutorgrade._id.ToString()))
+                                                                        {
                                                                             <div class="col-md-6">
-                                                                        <label for="SchoolGradeEnglish">English:</label>
-                                                                        <select id="SchoolGrade" name="TutorSchoolsGrade" for="SchoolGradeEnglish" class="form-control select2" data-placeholder="Select a Value">
-                                                                                    @foreach (var gradeValues in Model.EducationAndQualifications.TutorGradeValues)
+                                                                                <label for="@tutorGradesSubject._id">@tutorGradesSubject.Name</label>
+
+                                                                                <select id="tutorGradesSubject@(tutorGradesSubject._id)" name="TutorGradesSubjects" for="TutorGradesSubjects" class="form-control select2" multiple="multiple" data-placeholder="Select a Value">
+                                                                                    @foreach (var tutorSchools in Model.TutorGradeValues.Where(_ => _.TutorGradeSubjectID == tutorGradesSubject._id.ToString()))
                                                                                     {
-                                                                                        <option id="@gradeValues._id" value="@gradeValues.Name">@gradeValues.Name</option>
+                                                                                        <option id="SchoolGradeid@(tutorSchools._id)" value="@tutorSchools.Name">@tutorSchools.Name</option>
                                                                                     }
                                                                                 </select>
+                                                                                
                                                                             </div>
-
-                                                                            <div class="col-md-6">
-                                                                            <label for="idMath">Math</label>
-                                                                        <select id="idMath" name="idMath_@tutorgrade._id.ToString()" for="idMath_@tutorgrade._id.ToString()"
-                                                                                class="form-control select2" data-placeholder="Select a Value">
-                                                                                    @foreach (var gradeValues in Model.EducationAndQualifications.TutorGradeValues)
-                                                                                    {
-                                                                                        <option id="@gradeValues._id" value="@gradeValues.Name">@gradeValues.Name</option>
-                                                                                    }
-                                                                                </select>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                             <label for="idScience">Science</label>
-                                                                             <select id="idSciencepsle" name="idScience_@tutorgrade._id.ToString()" for="idScience_@tutorgrade._id.ToString()"
-                                                                                class="form-control select2" data-placeholder="Select a Value">
-                                                                                    @foreach (var gradeValues in Model.EducationAndQualifications.TutorGradeValues)
-                                                                                    {
-                                                                                        <option id="@gradeValues._id" value="@gradeValues.Name">@gradeValues.Name</option>
-                                                                                    }
-                                                                                </select>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                        <label for="idChinese">Chinese</label>
-                                                                        <select id="idChinese" name="idChinese_@tutorgrade._id.ToString()" for="idChinese_@tutorgrade._id.ToString()"
-                                                                                class="form-control select2" data-placeholder="Select a Value">
-                                                                                    @foreach (var gradeValues in Model.EducationAndQualifications.TutorGradeValues)
-                                                                                    {
-                                                                                        <option id="@gradeValues._id" value="@gradeValues.Name">@gradeValues.Name</option>
-                                                                                    }
-                                                                                </select>
-                                                                            </div>
-
-                                                                            <div class="col-md-6">
-                                                                        <label for="idHigherChinese">Higher Chinese</label>
-                                                                        <select id="idHigherChinese" name="idHigherChinese_@tutorgrade._id.ToString()" for="idHigherChinese_@tutorgrade._id.ToString()"
-                                                                                class="form-control select2" data-placeholder="Select a Value">
-                                                                                    @foreach (var gradeValues in Model.EducationAndQualifications.TutorGradeValues)
-                                                                                    {
-                                                                                        <option id="@gradeValues._id" value="@gradeValues.Name">@gradeValues.Name</option>
-                                                                                    }
-                                                                                </select>
-                                                                            </div>
-
-                                                                          
-
+                                                                        }
                                                                    </div>
                                                             </div>
                                                         </div>
@@ -581,5 +539,9 @@
             }
         });
     });
-    
+
+    $('.custom-file-input').on('change', function () {
+        var fileNames = Array.from(this.files).map(file => file.name).join(', ');
+        $(this).siblings('.custom-file-label').addClass('selected').html(fileNames);
+    });
 </script>

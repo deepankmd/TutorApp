@@ -1,9 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
  @using System.Security.Claims
+@using TutorAppAPI.Helpers
 @{
     var user = User;
-    var isAdmin = user.IsInRole("Admin");
+    var isAdmin = user.IsInRole(UserConstants.AdminRole);
+    var isTutor = user.IsInRole(UserConstants.TutorRole);
+    var isParent = user.IsInRole(UserConstants.ParentDetails);
+
 }
 
 <head>
@@ -27,21 +31,14 @@
     <link href="~/lib/select2-bootstrap4-theme/select2-bootstrap4.min.css" rel="stylesheet" />
 </head>
 <body>
-    @{
-        string userRole = string.Empty;
-
-    }
     <div class="wrapper">
-
-
-
         <nav class="main-header navbar navbar-expand navbar-white navbar-light">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" id="colapse-menu" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                     <li class="nav-item d-none d-sm-inline-block">
                         <a href="~/Admins" class="nav-link">Admins </a>
@@ -51,71 +48,26 @@
                     <a href="#" class="nav-link">Contact</a>
                 </li>
             </ul>
-
+           
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <!-- Navbar Search -->
-                <li class="nav-item">
-                    <a class="nav-link" asp-controller="Admins" asp-action="Login" role="button">
-                        <i class="fa fas fa-lock"></i>
-                    </a>
-                </li>
-
+                @if (!isAdmin || !isTutor || !isParent)
+                {
+                    <li class="nav-item">
+                        <form id="logoutForm" asp-controller="Login" title="Logout" asp-action="Logout" method="post">
+                            <button type="submit" class="nav-link" title="Logout"><i class="fa fas fa-lock"></i></button>
+                        </form>
+                    </li>
+                }
+                
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
+                    <a id ="notificationPane" class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-comments"></i>
                         <span class="badge badge-danger navbar-badge">3</span>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Brad Diesel
-                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">Call me whenever you can...</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        John Pierce
-                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">I got your message bro</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <!-- Message Start -->
-                            <div class="media">
-                                <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
-                                <div class="media-body">
-                                    <h3 class="dropdown-item-title">
-                                        Nora Silvester
-                                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
-                                    </h3>
-                                    <p class="text-sm">The subject goes here</p>
-                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
-                                </div>
-                            </div>
-                            <!-- Message End -->
-                        </a>
-                        <div class="dropdown-divider"></div>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notificationDropdown">
                         <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
                     </div>
                 </li>
@@ -202,7 +154,7 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                   <li class="nav-item">
                      <a href="~/Admins" class="nav-link active">
@@ -211,7 +163,7 @@
                     </a>
                   </li>
                 }
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                   <li class="nav-item">
                         <a href="~/EducationLevel" class="nav-link">
@@ -220,7 +172,7 @@
                     </a>
                   </li>
                 }
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                     <li class="nav-item">
                         <a href="~/TutorCategory" class="nav-link">
@@ -229,7 +181,7 @@
                         </a>
                     </li>
                 }
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                     <li class="nav-item">
                         <a href="~/TutorLevel" class="nav-link">
@@ -238,7 +190,7 @@
                         </a>
                     </li>
                 }
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                     <li class="nav-item">
                         <a href="~/TutorSchools" class="nav-link">
@@ -247,7 +199,7 @@
                         </a>
                     </li>
                 }
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                     <li class="nav-item">
                         <a href="~/TutorSubject" class="nav-link">
@@ -256,7 +208,7 @@
                         </a>
                     </li>
                 }
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                     <li class="nav-item">
                         <a href="~/TutorGrade" class="nav-link">
@@ -265,7 +217,7 @@
                         </a>
                     </li>
                 }
-                @if (userRole == "Admin")
+                @if (isAdmin)
                 {
                  <li class="nav-item">
                      <a href="~/TutorLocations" class="nav-link">
@@ -274,16 +226,7 @@
                      </a>
                  </li>
                 }
-                @if (string.IsNullOrEmpty(userRole))
-                {
-                 <li class="nav-item">
-                     <a href="~/RegisterTutor" class="nav-link">
-                         <i class="far fa-landmark nav-icon"></i>
-                         <p>Register as Tutor</p>
-                     </a>
-                 </li>
-                }
-                @if (userRole != "ParentL")
+                @if (isParent || isTutor)
                 {
                     <li class="nav-item">
                         <a asp-controller="Assignment" asp-action="Index" class="nav-link">
@@ -292,7 +235,7 @@
                         </a>
                     </li>
                 }
-                @if (userRole != "ParentL")
+                @if (isParent)
                 {
                     <li class="nav-item">
                           <a asp-controller="ParentDetails" asp-action="Profile" class="nav-link">
@@ -301,6 +244,30 @@
                         </a>
                     </li>
                 }
+               @if (isTutor)
+               {
+                   <li class="nav-item">
+                       <a asp-controller="Tutors" asp-action="Profile" class="nav-link">
+                           <i class="far fa-landmark nav-icon"></i>
+                           <p>Profile</p>
+                       </a>
+                   </li>
+               }
+                   <li class="nav-item">
+                                    <a asp-controller="Notification" asp-action="Index" class="nav-link">
+                           <i class="far fa-landmark nav-icon"></i>
+                           <p>Notification</p>
+                       </a>
+                   </li>
+                @if (isAdmin || isTutor || isParent)
+                {
+                    <li class="nav-item">
+                        <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post">
+                            <button type="submit" class="nav-link"><i class="fa fas fa-lock"></i>Logout</button>
+                        </form>
+                    </li>
+                }
+                
             </ul>
           </li>
          
@@ -369,12 +336,25 @@
                 $(this).bootstrapSwitch('state', $(this).prop('checked'));
             });
             $("#colapse-menu").click();
+
+            $('#notificationPane').on('click', function () {
+                $.ajax({
+                    url: '@Url.Action("NotifyPanel", "Notification")',
+                    type: 'GET',
+                    success: function (result) {
+                        $('#notificationDropdown').html(result);
+                    }
+                });
+            });
         });
         // BS-Stepper Init
         document.addEventListener('DOMContentLoaded', function () {
             window.stepper = new Stepper(document.querySelector('.bs-stepper'))
         })
 
+        
+           
+      
     </script>
 </body>
 </html>

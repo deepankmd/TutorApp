@@ -5,26 +5,26 @@ using TutorAppAPI.Services;
 
 namespace TutorAppAPI.Controllers
 {
-    public class TutorGradeValuesController : Controller
+    public class TutorGradesSubjectController : Controller
     {
         private readonly MongoContext _context;
-        public TutorGradeValuesController(MongoContext context)
+        public TutorGradesSubjectController(MongoContext context)
         {
             _context = context;
         }
         public async Task<IActionResult> Index()
         {
-            var tutorGradeValues = await _context.TutorGradeValues.Find(_ => true).ToListAsync();
-            return View(tutorGradeValues);
+            var tutorGradesSubject = await _context.TutorGradesSubject.Find(_ => true).ToListAsync();
+            return View(tutorGradesSubject);
         }
         public IActionResult Create() => PartialView();
 
         [HttpPost]
-        public async Task<IActionResult> Create(TutorGradeValues tutorGrade)
+        public async Task<IActionResult> Create(TutorGradesSubject tutorGrade)
         {
             if (ModelState.IsValid)
             {
-                await _context.TutorGradeValues.InsertOneAsync(tutorGrade);
+                await _context.TutorGradesSubject.InsertOneAsync(tutorGrade);
                 return RedirectToAction(nameof(Index));
             }
             return PartialView(tutorGrade);
@@ -32,7 +32,7 @@ namespace TutorAppAPI.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            var tutorGrade = await _context.TutorGradeValues.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var tutorGrade = await _context.TutorGradesSubject.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
             if (tutorGrade == null)
             {
                 return NotFound();
@@ -41,11 +41,11 @@ namespace TutorAppAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(TutorGradeValues tutorGrade)
+        public async Task<IActionResult> Edit(TutorGradesSubject tutorGrade)
         {
             if (ModelState.IsValid)
             {
-                await _context.TutorGradeValues.ReplaceOneAsync(t => t._id == tutorGrade._id, tutorGrade);
+                await _context.TutorGradesSubject.ReplaceOneAsync(t => t._id == tutorGrade._id, tutorGrade);
                 return RedirectToAction(nameof(Index));
             }
             return PartialView(tutorGrade);
@@ -54,7 +54,7 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            await _context.TutorGradeValues.DeleteOneAsync(t => t._id.ToString() == id);
+            await _context.TutorGradesSubject.DeleteOneAsync(t => t._id.ToString() == id);
             return RedirectToAction(nameof(Index));
         }
     }

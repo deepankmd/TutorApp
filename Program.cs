@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
+using TutorAppAPI.Helpers;
 using TutorAppAPI.Services;
 using TutorAppAPI.Services.IServices;
 using TutorAppAPI.Settings;
@@ -24,8 +26,8 @@ builder.Services.AddSingleton<IRegisterTutorServices, RegisterTutorServices>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Admin/Login";
-        options.AccessDeniedPath = "/Admin/AccessDenied";
+        options.LoginPath = "/Login/Login";
+        options.AccessDeniedPath = "/Login/Logout";
     });
 builder.Services.AddSession(options =>
 {
@@ -36,8 +38,15 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("RequireAnyRole", policy =>
+        policy.RequireAssertion(context =>
+            context.User.HasClaim(c =>
+                (c.Type == ClaimTypes.Role &&
+                (c.Value == UserConstants.ParentDetails ||
+                 c.Value == UserConstants.AdminRole ||
+                 c.Value == UserConstants.TutorRole)))));
 });
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

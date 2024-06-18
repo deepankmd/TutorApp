@@ -31,22 +31,24 @@ namespace TutorAppAPI.Controllers
             var tutorGradesSubject = await _registerTutorServices.GetAllTutorGradesSubjectAsync();
             var tutorGradeValues = await _registerTutorServices.GetAllTutorGradeValuesAsync();
 
-
             TutorRegisterViewModel tutorRegisterViewModel = new TutorRegisterViewModel { AccountInfo = new AccountInfo(),
                 EducationAndQualifications = new EducationAndQualifications{ TutorGradesSubject = tutorGradesSubject, TutorGradeValues = tutorGradeValues },
                 TutoringPreferences = new TutoringPreferences { TutorLevels = tutorLevels, TutorSubject = tutorSubject, Locations = tutorLocations },
                 EducationLevel = educationLevel,
                 TutorCategory = tutorCategory,
                 TutorSchool = tutorSchool,
-                TutorGrade = tutorGrade,                
+                TutorGrade = tutorGrade,
+                TutorGradesSubject = tutorGradesSubject,
+                TutorGradeValues = tutorGradeValues,
             };
             return View(tutorRegisterViewModel);
 		}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Register(TutorRegisterViewModel model)
+        public async Task<IActionResult> Register(List<IFormFile> userInputFiles)
         {
+            TutorRegisterViewModel model = new TutorRegisterViewModel();
             if (ModelState.IsValid)
             {
                 try
@@ -54,7 +56,7 @@ namespace TutorAppAPI.Controllers
                     AccountInfo accountInfo = new AccountInfo();
                     accountInfo.Name = Request.Form["AccountInfo.Name"];
                     accountInfo.Email = Request.Form["AccountInfo.Email"];
-                    accountInfo.MobileNumber = int.Parse(Request.Form["AccountInfo.MobileNumber"]);
+                    accountInfo.MobileNumber = long.Parse(Request.Form["AccountInfo.MobileNumber"]);
                     accountInfo.Password = Request.Form["AccountInfo.Password"];
                     accountInfo.PasswordConfirm = Request.Form["AccountInfo.PasswordConfirm"];
                     accountInfo.NRIC = Request.Form["AccountInfo.NRIC"];
@@ -95,7 +97,31 @@ namespace TutorAppAPI.Controllers
                     
 
                     _context.Tutors.InsertOne(TutorRegisterSaveViewModel);
-                    return RedirectToAction("Success");
+
+                    // Create a message for the email
+                    string emailMessage = $"Dear {TutorRegisterSaveViewModel.Name},\n\n" +
+                                          $"We have successfully created a new Tutor profile for {TutorRegisterSaveViewModel.Name}.\n\n" +
+                                          "Thank you for using our service.\n\n" +
+                                          "Best regards,\n" +
+                                          "Your TutorMaster";
+                    string subject = "Tutor Master Registration Team";
+
+                    Notification notification = new Notification
+                    {
+                        UserName = TutorRegisterSaveViewModel.Name,
+                        Subject = "Tutor Created",
+                        Email = TutorRegisterSaveViewModel.Email,
+                        Mobile = TutorRegisterSaveViewModel.MobileNumber.ToString(),
+                        Message = emailMessage,
+                        CreatedDate = DateTime.UtcNow,
+                        IsRead = true,
+                        NotificationType = NotificationType.admin
+                    };
+                    _context.Notification.InsertOne(notification);
+
+                    //await NotificationService.SendEmailAsync(TutorRegisterSaveViewModel.Email, subject, emailMessage);
+
+                    return RedirectToAction("Index","Home");
                 }
                 catch (Exception ex)
                 {

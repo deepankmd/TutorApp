@@ -10,7 +10,7 @@ namespace TutorAppAPI.Models
         public ObjectId _id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public int MobileNumber { get; set; }
+        public long MobileNumber { get; set; }
         public string Password { get; set; }
         public string PasswordConfirm { get; set; }
         public string NRIC { get; set; }

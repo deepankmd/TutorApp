@@ -20,7 +20,7 @@ namespace TutorAppAPI.Services
         public IMongoCollection<EducationLevel> EducationLevel =>
            _database.GetCollection<EducationLevel>("EducationLevel");
         public IMongoCollection<TutorLevel> TutorLevel =>
-           _database.GetCollection<TutorLevel>("TutorLevel");
+           _database.GetCollection<TutorLevel>("TutorLevels");
         public IMongoCollection<TutorCategory> TutorCategory =>
            _database.GetCollection<TutorCategory>("TutorCategory");
         public IMongoCollection<ParentDetails> ParentDetails =>
@@ -36,5 +36,12 @@ namespace TutorAppAPI.Services
             _database.GetCollection<TutorSubject>("TutorSubject");
         public IMongoCollection<TutorSchools> TutorSchools =>
             _database.GetCollection<TutorSchools>("TutorSchools");
+        public IMongoCollection<TutorGradesSubject> TutorGradesSubject =>
+            _database.GetCollection<TutorGradesSubject>("TutorGradesSubject");
+        public IMongoCollection<TutorGradeValues> TutorGradeValues =>
+            _database.GetCollection<TutorGradeValues>("TutorGradeValues");
+
+        public IMongoCollection<Notification> Notification =>
+           _database.GetCollection<Notification>("Notification");
     }
 }

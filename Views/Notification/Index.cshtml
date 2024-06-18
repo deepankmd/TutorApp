@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Notification>
+@{
+    ViewData["Title"] = "Notifications";
+}
+<div class="row">
+
+@foreach (var notification in Model)
+{
+        <div class="col-md-4">
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">@notification.Subject @notification.UserName</h5>
+                <p class="card-text">@notification.Message</p>
+                <p class="card-text">
+                    <small class="text-muted">@notification.CreatedDate.ToString("MMM dd yyyy hh:mm")</small>
+                </p>
+            </div>
+        </div>
+        </div>
+}
+</div>

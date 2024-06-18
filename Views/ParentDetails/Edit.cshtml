@@ -29,16 +29,6 @@
         @Html.ValidationMessageFor(model => model.StudentName, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
-        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.Password, new { htmlAttributes= new { @class = "form-control", type = "password" } })
-        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.PasswordConfirm, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.PasswordConfirm, new { htmlAttributes= new { @class = "form-control", type = "password" } })
-        @Html.ValidationMessageFor(model => model.PasswordConfirm, "", new { @class = "text-danger" })
-    </div>
-    <div class="form-group">
         @Html.LabelFor(model => model.RelationShip, htmlAttributes: new { @class = "control-label" })
         @Html.EditorFor(model => model.RelationShip, new { htmlAttributes= new { @class = "form-control" } })
         @Html.ValidationMessageFor(model => model.RelationShip, "", new { @class = "text-danger" })
@@ -47,11 +37,6 @@
         @Html.LabelFor(model => model.Nationality, htmlAttributes: new { @class = "control-label" })
         @Html.DropDownListFor(model => model.Nationality, (SelectList)ViewBag.Nationality, "Select Nationality", htmlAttributes: new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "text-danger" })
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(model => model.DateOfBirth, htmlAttributes: new { @class = "control-label" })
-        @Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control", type = "date" } })
-        @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "control-label" })
