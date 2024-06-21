@@ -1,32 +1,56 @@
 ﻿@model TutorAppAPI.ViewModel.LoginViewModel
-
 @{
-    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    Layout = "~/Views/Shared/_layoutreset.cshtml";
     ViewData["Title"] = "Login";
 }
+<div class="card">
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">Sign in to start your session</p>
 
-<h2 class="align-center">User Login</h2>
-
-<div class="row">
-    <div class="col-md-12">
         <form asp-action="Login" method="post">
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+            <div class="input-group mb-3">
+                <input asp-for="Email" type="text" class="form-control" placeholder="Email" required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-envelope"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" type="password" />
-                <span asp-validation-for="Password" class="text-danger"></span>
+            <div class="input-group mb-3">
+                <input asp-for="Password" type="password" class="form-control" placeholder="Password" required>
+                <div class="input-group-append">
+                    <div class="input-group-text">
+                        <span class="fas fa-lock"></span>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <button asp-controller="Login" asp-action="UserLogin" class="btn btn-primary">Login</button>
-            </div>
-
-            <div class="form-group">
-                <span class="text-danger">@ViewData["ErrorMessage"]</span>
+            <div class="row">
+                <div class="col-6">
+                    <div class="icheck-primary">
+                        <input type="checkbox" id="remember">
+                        <label for="remember">
+                            Remember Me
+                        </label>
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-6">
+                    <button asp-controller="Login" asp-action="UserLogin" class="btn btn-primary btn-block">Sign In</button>
+                </div>
+                <!-- /.col -->
             </div>
         </form>
+
+        <div class="social-auth-links text-center mb-3">
+            <p class="mb-0">
+                <a asp-action="ResetPassword" asp-controller="Login">I forgot my password</a>               
+            </p>
+        </div>
+        <p class="mb-1">
+            <a asp-action="Create" asp-controller="ParentDetails">Register as a Parent</a>
+        </p>
+        <p class="mb-0">
+            <a asp-action="Index" asp-controller="RegisterTutor">Register as a Tutor</a>
+        </p>
     </div>
 </div>

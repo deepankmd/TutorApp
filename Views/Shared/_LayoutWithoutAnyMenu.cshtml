@@ -14,8 +14,7 @@
     <link href="~/lib/bs-stepper/css/bs-stepper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TutorAppAPI.styles.css" asp-append-version="true" />
-
-    <!-- Google Font: Source Sans Pro -->
+     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback"/>
     <link href="~/lib/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"/>
@@ -25,6 +24,10 @@
     <link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet" />
     <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
     <link href="~/lib/select2-bootstrap4-theme/select2-bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-switch/css/bootstrap2/bootstrap-switch.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet" />
+
 </head>
 <body>
     @{
@@ -34,9 +37,9 @@
     <div class="card">
         <div class="row">
             <!-- Content Header (Page header) -->
-            
+
             <section class="content">
-             @RenderBody()
+                @RenderBody()
             </section>
             <!-- /.content -->
         </div>
@@ -51,19 +54,22 @@
     <script src="~/lib/daterangepicker/daterangepicker.js"></script>
     <script src="~/lib/overlayscrollbars/js/jquery.overlayscrollbars.min.js"></script>
     <script src="~/dist/js/adminlte.js"></script>
-    <script src="~/dist/js/demo.js"></script>
     <script src="~/lib/summernote/summernote-bs4.min.js"></script>
     <script src="~/dist/js/pages/dashboard.js"></script>
     <script src="~/lib/moment/moment.min.js"></script>
     <script src="~/lib/bs-stepper/js/bs-stepper.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="~/lib/bootstrap-switch/js/bootstrap-switch.min.js"></script> 
     @await RenderSectionAsync("Scripts", required: false)
 
     <script>
         $(function () {
             $('.select2').select2();
-
+            $('#timepicker').datetimepicker({
+                format: 'LT'
+            });
             //Initialize Select2 Elements
             $('.select2bs4').select2({
                 theme: 'bootstrap4'
@@ -71,7 +77,14 @@
             $("input[data-bootstrap-switch]").each(function () {
                 $(this).bootstrapSwitch('state', $(this).prop('checked'));
             });
+
             $("#colapse-menu").click();
+
+            $('#datetimepicker1').datetimepicker();
+
+            $('#datetimepicker3').datetimepicker({
+                format: 'LT'
+            });
         });
         // BS-Stepper Init
         document.addEventListener('DOMContentLoaded', function () {

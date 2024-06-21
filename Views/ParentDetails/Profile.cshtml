@@ -185,7 +185,7 @@
                             </div>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.RelationShip, htmlAttributes: new { @class = "control-label" })
-                                @Html.EditorFor(model => model.RelationShip, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.DropDownListFor(model => model.RelationShip, (SelectList)ViewBag.RelationShip, "Select RelationShip", htmlAttributes: new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.RelationShip, "", new { @class = "text-danger" })
                             </div>
                             <div class="form-group">

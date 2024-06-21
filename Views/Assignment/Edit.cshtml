@@ -12,47 +12,47 @@
         <input type="hidden" asp-for="_id" />
         <div class="form-group">
             <label asp-for="Email"></label>
-            <input asp-for="Email" class="form-control" />
+            <input asp-for="Email" class="form-control" required />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="SubjectsToBeTutored"></label>
-            <input asp-for="SubjectsToBeTutored" class="form-control" />
+            <input asp-for="SubjectsToBeTutored" class="form-control" required />
             <span asp-validation-for="SubjectsToBeTutored" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="StudentLevel"></label>
-            <input asp-for="StudentLevel" class="form-control" />
+            <input asp-for="StudentLevel" class="form-control" required />
             <span asp-validation-for="StudentLevel" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="FrequencyOfLessons"></label>
-            <input asp-for="FrequencyOfLessons" class="form-control" />
+            <input asp-for="FrequencyOfLessons" class="form-control" required />
             <span asp-validation-for="FrequencyOfLessons" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="YourTuitionBudget"></label>
-            <input asp-for="YourTuitionBudget" class="form-control" />
+            <input asp-for="YourTuitionBudget" class="form-control" required />
             <span asp-validation-for="YourTuitionBudget" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="TuitionStartDate"></label>
-            <input asp-for="TuitionStartDate" class="form-control" type="date" />
+            <input asp-for="TuitionStartDate" class="form-control" type="date" required />
             <span asp-validation-for="TuitionStartDate" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="LengthOfCommitment"></label>
-            <input asp-for="LengthOfCommitment" class="form-control" />
+            <input asp-for="LengthOfCommitment" class="form-control" required />
             <span asp-validation-for="LengthOfCommitment" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="AvailableTimings"></label>
-            <input asp-for="AvailableTimings" class="form-control" type="datetime-local" />
+            <input asp-for="AvailableTimings" class="form-control" type="datetime-local" required />
             <span asp-validation-for="AvailableTimings" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="PreferredTutorGender"></label>
-            <select asp-for="PreferredTutorGender" class="form-control">
+            <select asp-for="PreferredTutorGender" class="form-control" required >
                 <option value="Any">Any</option>
                 <option value="Prefer Female (but open to both genders)">Prefer Female (but open to both genders)</option>
                 <option value="Prefer Male (but open to both genders)">Prefer Male (but open to both genders)</option>
@@ -63,12 +63,12 @@
         </div>
         <div class="form-group">
             <label asp-for="DescriptionOfNeeds"></label>
-            <textarea asp-for="DescriptionOfNeeds" class="form-control"></textarea>
+            <textarea asp-for="DescriptionOfNeeds" class="form-control" required></textarea>
             <span asp-validation-for="DescriptionOfNeeds" class="text-danger"></span>
         </div>
         <div class="form-group">
             <label asp-for="DueDate"></label>
-            <input asp-for="DueDate" class="form-control" type="date" />
+            <input asp-for="DueDate" class="form-control" type="date" required />
             <span asp-validation-for="DueDate" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Save</button>

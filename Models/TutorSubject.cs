@@ -9,6 +9,7 @@ namespace TutorAppAPI.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId _id { get; set; }
         public string Name { get; set; }
+        public TutorLevel TutorLevel { get; set; }
         public string TutorLevelID { get; set; }
     }
 }

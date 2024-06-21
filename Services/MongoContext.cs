@@ -43,5 +43,8 @@ namespace TutorAppAPI.Services
 
         public IMongoCollection<Notification> Notification =>
            _database.GetCollection<Notification>("Notification");
+        public IMongoCollection<AssignmentApplied> AssignmentApplied => 
+            _database.GetCollection<AssignmentApplied>("AssignmentApplied");
+
     }
 }

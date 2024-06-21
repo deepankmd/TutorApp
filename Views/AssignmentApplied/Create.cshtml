@@ -1,0 +1,63 @@
+﻿@model AssignmentApplied
+@{
+    Layout = "~/Views/Shared/_LayoutWithoutAnyMenu.cshtml";
+    ViewData["Title"] = "Create Assignment";
+}
+
+<div class="modal" id="createPopup" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Create</h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                
+            </div>
+            <div class="modal-body">
+                <form asp-action="Create" method="post" id="createForm">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label asp-for="YourRate">Your Rate (/h)</label>
+                        <input asp-for="YourRate" class="form-control" required />
+                        <span asp-validation-for="YourRate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AllAvailableTimings">All Available Timings (be specific!)</label>
+                        <textarea asp-for="AllAvailableTimings" class="form-control" required></textarea>
+                        <span asp-validation-for="AllAvailableTimings" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="WhenCanYouStartEarliest">When Can You Start Earliest?</label>
+                        <input asp-for="WhenCanYouStartEarliest" class="form-control" required />
+                        <span asp-validation-for="WhenCanYouStartEarliest" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="WhyShouldYouBeChosen">Why Should You Be Chosen?</label>
+                        <textarea asp-for="WhyShouldYouBeChosen" class="form-control" required></textarea>
+                        <span asp-validation-for="WhyShouldYouBeChosen" class="text-danger"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('createEditForm').addEventListener('submit', function (event) {
+        var checkboxes = document.querySelectorAll('.availability-checkbox');
+        var selectedTimings = [];
+
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedTimings.push(checkbox.dataset.slot + '-' + checkbox.dataset.day);
+            }
+        });
+
+        document.getElementById('AvailableTimings').value = selectedTimings.join(',');
+    });
+</script>
+

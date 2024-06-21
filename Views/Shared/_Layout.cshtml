@@ -7,7 +7,6 @@
     var isAdmin = user.IsInRole(UserConstants.AdminRole);
     var isTutor = user.IsInRole(UserConstants.TutorRole);
     var isParent = user.IsInRole(UserConstants.ParentDetails);
-
 }
 
 <head>
@@ -231,7 +230,7 @@
                     <li class="nav-item">
                         <a asp-controller="Assignment" asp-action="Index" class="nav-link">
                             <i class="far fa-landmark nav-icon"></i>
-                            <p>Postings</p>
+                            <p>Assignments</p>
                         </a>
                     </li>
                 }
@@ -315,9 +314,7 @@
     <script src="~/lib/daterangepicker/daterangepicker.js"></script>
     <script src="~/lib/overlayscrollbars/js/jquery.overlayscrollbars.min.js"></script>
     <script src="~/dist/js/adminlte.js"></script>
-    <script src="~/dist/js/demo.js"></script>
     <script src="~/lib/summernote/summernote-bs4.min.js"></script>
-    <script src="~/dist/js/pages/dashboard.js"></script>
     <script src="~/lib/moment/moment.min.js"></script>
     <script src="~/lib/bs-stepper/js/bs-stepper.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -327,6 +324,7 @@
     <script>
         $(function () {
             $('.select2').select2();
+           
 
             //Initialize Select2 Elements
             $('.select2bs4').select2({

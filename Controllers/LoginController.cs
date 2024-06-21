@@ -58,7 +58,7 @@ namespace TutorAppAPI.Controllers
             else if (userRecord.FirstOrDefault() == null)
             {
                 var tutor = _context.Tutors
-                    .Find(a => (a.Email == loginViewModel.Email || a.MobileNumber == int.Parse(loginViewModel.Email)) && a.Password == loginViewModel.Password);
+                    .Find(a => (a.Email == loginViewModel.Email || a.MobileNumber == long.Parse(loginViewModel.Email)) && a.Password == loginViewModel.Password);
 
                 if (tutor.FirstOrDefault() != null)
                 {
@@ -97,6 +97,42 @@ namespace TutorAppAPI.Controllers
             HttpContext.Session.Clear();
             HttpContext.Session = null;
             return RedirectToAction("Index", "Login");
+        }
+        [HttpGet]
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        // POST: Account/SendResetLink
+        [HttpPost]
+        public IActionResult SendResetLink(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+
+                string emailMessage = $"Dear {model.Email},\n\n" +
+                                $"We received a request to reset your password for your Tutor Master account. To proceed with resetting your password, please click the link below:\r\n\n\n" +
+                                "[Reset Password Link]\r\n" +
+                                "If you did not request a password reset, please disregard this email or contact our support team immediately.\r\n" +
+                                "Thank you for using Tutor Master.\r\n"+
+                                "Best regards,\n" +
+                                "Your Tuition Masters\n"+
+                                "Admin Team\n";
+
+                NotificationService.SendEmailAsync(model.Email, "Tutor Master Password Reset Request", emailMessage);
+                ViewBag.Message = "A reset link has been sent to your email.";
+                return View("ResetPasswordConfirmation");
+            }
+
+            return View("ResetPassword", model);
+        }
+
+        // GET: Account/ResetPasswordConfirmation
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
         }
     }
 }

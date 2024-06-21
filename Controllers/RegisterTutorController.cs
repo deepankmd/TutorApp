@@ -56,7 +56,7 @@ namespace TutorAppAPI.Controllers
                     AccountInfo accountInfo = new AccountInfo();
                     accountInfo.Name = Request.Form["AccountInfo.Name"];
                     accountInfo.Email = Request.Form["AccountInfo.Email"];
-                    accountInfo.MobileNumber = long.Parse(Request.Form["AccountInfo.MobileNumber"]);
+                    accountInfo.MobileNumber = (Request.Form["AccountInfo.MobileNumber"]);
                     accountInfo.Password = Request.Form["AccountInfo.Password"];
                     accountInfo.PasswordConfirm = Request.Form["AccountInfo.PasswordConfirm"];
                     accountInfo.NRIC = Request.Form["AccountInfo.NRIC"];
@@ -81,7 +81,7 @@ namespace TutorAppAPI.Controllers
 
                     TutorRegisterSaveViewModel.Name = accountInfo.Name;
                     TutorRegisterSaveViewModel.Email = accountInfo.Email;
-                    TutorRegisterSaveViewModel.MobileNumber = accountInfo.MobileNumber;
+                    TutorRegisterSaveViewModel.MobileNumber = long.Parse(accountInfo.MobileNumber);
                     TutorRegisterSaveViewModel.Password = accountInfo.Password;
                     TutorRegisterSaveViewModel.PasswordConfirm = accountInfo.PasswordConfirm;
                     TutorRegisterSaveViewModel.NRIC = accountInfo.NRIC;

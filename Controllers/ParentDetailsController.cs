@@ -122,7 +122,15 @@ namespace TutorAppAPI.Controllers
                 new SelectListItem { Value = "Singaporean/PR", Text = "Singaporean/PR" },
                 new SelectListItem { Value = "Foreigner", Text = "Foreigner" }
             }, "Value", "Text");
+
+            ViewBag.RelationShip = new SelectList(new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Son", Text = "Son" },
+                new SelectListItem { Value = "Daughter", Text = "Daughter" },
+                new SelectListItem { Value = "Others", Text = "Others" }
+            }, "Value", "Text");
         }
+
         [Authorize(Policy = "RequireAnyRole")]
         public async Task<IActionResult> Profile(string id)
         {
