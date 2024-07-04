@@ -1,0 +1,69 @@
+﻿@using TutorAppAPI.ViewModel
+@model TutorRegisterViewModel
+
+<form id="accountInfoForm">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="AccountInfo.Name"></label>
+                <input min="3" maxlength="50" type="text" asp-for="AccountInfo.Name" class="form-control" required placeholder="Enter Name" />
+                <span asp-validation-for="AccountInfo.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.Email"></label>
+                <input min="3" maxlength="150" type="text" asp-for="AccountInfo.Email" value="" class="form-control" required placeholder="Enter Email" />
+                <span asp-validation-for="AccountInfo.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.MobileNumber">Mobile Number:</label>
+                <input type="text" maxlength="8" asp-for="AccountInfo.MobileNumber" class="form-control" required placeholder="Enter Mobile Number" />
+                <span asp-validation-for="AccountInfo.MobileNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.Password">Password:</label>
+                <input type="password" maxlength="31" asp-for="AccountInfo.Password" class="form-control" required />
+                <span asp-validation-for="AccountInfo.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.PasswordConfirm">Confirm Password:</label>
+                <input maxlength="31" type="password" asp-for="AccountInfo.PasswordConfirm" class="form-control" required />
+                <span asp-validation-for="AccountInfo.PasswordConfirm" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="AccountInfo.NRIC">NRIC:</label>
+                <input maxlength="50" type="text" asp-for="AccountInfo.NRIC" class="form-control" required placeholder="Enter NRIC" />
+                <span asp-validation-for="AccountInfo.NRIC" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.Citizenship">Citizenship:</label>
+                <select id="Citizenship" name="Citizenship" asp-for="AccountInfo.Citizenship" class="form-control select2" data-placeholder="Select a Citizenship" required>
+                    <option value="Singaporean/PR">Singaporean/PR</option>
+                    <option value="Foreigner">Foreigner</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.DateofBirth">Date of Birth:</label>
+                <input type="date" asp-for="AccountInfo.DateofBirth" class="form-control" required placeholder="Enter Date of Birth" />
+                <span asp-validation-for="AccountInfo.DateofBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.Gender">Gender:</label>
+                <select id="Gender" name="Gender" asp-for="AccountInfo.Gender" class="form-control select2" required placeholder="Enter Gender">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="AccountInfo.Race">Race:</label>
+                <select id="Race" name="Race" asp-for="AccountInfo.Race" class="form-control select2" required placeholder="Enter Race">
+                    <option value="Indian">Indian</option>
+                    <option value="Malay">Malay</option>
+                    <option value="Chinese">Chinese</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</form>

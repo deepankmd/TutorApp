@@ -13,16 +13,6 @@
 
   var $__default = /*#__PURE__*/_interopDefaultLegacy($);
 
-  /**
-   * --------------------------------------------
-   * AdminLTE CardRefresh.js
-   * License MIT
-   * --------------------------------------------
-   */
-  /**
-   * Constants
-   * ====================================================
-   */
 
   var NAME$e = 'CardRefresh';
   var DATA_KEY$e = 'lte.cardrefresh';

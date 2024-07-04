@@ -7,10 +7,13 @@ namespace TutorAppAPI.Models
     {
         public MappingProfile()
         {
-             CreateMap<AssignmentViewModel, Assignment>().ReverseMap();
+            CreateMap<AssignmentViewModel, Assignment>().ReverseMap();
             CreateMap<TutorSubject, TutorSubjectViewModel>().ReverseMap();
             CreateMap<Assignment, AssignmentReadViewModel>().ReverseMap();
-
+            CreateMap<Notification, NotificationViewModel>().ReverseMap();
+            CreateMap<Notification, NotificationDetailViewModel>().ReverseMap();
+            CreateMap<AssignmentApplied, AssignmentAppliedViewModel>().ReverseMap();
+            CreateMap<ParentDetails, ParentDetailsViewModel>().ReverseMap();
         }
     }
 }

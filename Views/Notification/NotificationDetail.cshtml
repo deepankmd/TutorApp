@@ -1,0 +1,31 @@
+﻿@using TutorAppAPI.ViewModel
+@model NotificationDetailViewModel
+<form asp-action="ApproveNotification" method="post">
+    <input type="hidden" name="id" value="@Model._id" />
+    <h1>Notification Details</h1>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Mobile:</strong> @Model.Mobile</p>
+    <p><strong>Notification Type:</strong> @Model.NotificationType</p>
+    <p><strong>Screen Type:</strong> @Model.ScreenType</p>
+
+    @if (Model.ScreenType == ScreenType.TutorRegister && Model.Tutorṣ != null)
+    {
+        <h2>Tutor Details</h2>
+        <p><strong>Tutor Name:</strong> @Model.Tutorṣ.Name</p>
+        <p><strong>Tutor Education:</strong> @Model.Tutorṣ.EducationLevelSelected</p>
+        <p><strong>Tutor DOB:</strong> @Model.Tutorṣ.DateofBirth</p>
+        <p><strong>Tutor Gender:</strong> @Model.Tutorṣ.Gender</p>
+
+        <!-- Display other tutor properties here -->
+    }
+    else if (Model.ScreenType == ScreenType.Assignment && Model.Assignment != null)
+    {
+        <h2>Assignment Details</h2>
+        <p><strong>Assignment Subject:</strong> @Model.Assignment.SubjectsToBeTutored</p>
+        <p><strong>Assignment Available Timing:</strong> @Model.Assignment.AvailableTimings</p>
+        <p><strong>Assignment Description Of Needs:</strong> @Model.Assignment.DescriptionOfNeeds</p>
+    }
+   
+        <input type="hidden" name="id" value="@Model._id" />
+        <button type="submit">Approve</button>
+    </form>

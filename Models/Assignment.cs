@@ -8,7 +8,6 @@ namespace TutorAppAPI.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId _id { get; set; }
-        public string Email { get; set; }
         public string SubjectsToBeTutored { get; set; }
         public string StudentLevel { get; set; }
         public string FrequencyOfLessons { get; set; }
@@ -23,10 +22,21 @@ namespace TutorAppAPI.Models
         public string TutorAvailability { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime DueDate { get; set; } = DateTime.UtcNow;
+        public bool IsVerified { get; set; } = false;
+        public AssignmentStatus AssignmentStatus { get; set; }
+        public string AppliedCount { get; set; }
     }
     public enum WorkingType
     {
         Online,
         InPerson
+    }
+
+    public enum AssignmentStatus
+    {
+        Pending,
+        Applied,
+        Confirmed,
+        Closed
     }
 }

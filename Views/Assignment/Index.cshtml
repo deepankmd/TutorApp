@@ -18,10 +18,63 @@
 {
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#assignmentModal" data-url="@Url.Action("Create", "Assignment")">Create New Assignment</button>
 }
+@if (isTutor)
+{
+    @* <form asp-action="Index" method="get" class="mb-3">
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="tutorType">Tutor Type</label>
+                <select id="tutorType" name="Filter.TutorType" class="form-control">
+                    <option value="">All</option>
+                    <option value="Type1" @(Model.Filter.TutorType == "Type1" ? "selected" : "")>Type1</option>
+                    <option value="Type2" @(Model.Filter.TutorType == "Type2" ? "selected" : "")>Type2</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="gender">Gender</label>
+                <select id="gender" name="Filter.Gender" class="form-control">
+                    <option value="">All</option>
+                    <option value="Male" @(Model.Filter.Gender == "Male" ? "selected" : "")>Male</option>
+                    <option value="Female" @(Model.Filter.Gender == "Female" ? "selected" : "")>Female</option>
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="location">Location</label>
+                <select id="location" name="Filter.Location" class="form-control">
+                    <option value="">All</option>
+                    @foreach (var zone in Model.Filter.AvailableZones)
+                    {
+                        <option value="@zone" @(Model.Filter.Location == zone ? "selected" : "")>@zone</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group col-md-3">
+                <label for="subjects">Subjects</label>
+                <select id="subjects" name="Filter.Subjects" class="form-control">
+                    <option value="">All</option>
+                    @foreach (var subject in Model.Filter.AvailableSubjects)
+                    {
+                        <option value="@subject.Name" @(Model.Filter.Subjects == subject.Name ? "selected" : "")>@subject.Name</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form> *@
+}
+
 <div class="card card-solid">
     <div class="card-body pb-0">
         <div class="row">
-            <div id="modalContainer"></div>
+            <div id="modalContainer">
+                <h5>
+                        @if (!Model.Any()) {
+                        <b>
+                            No Assignments for this selected subjects !!!
+                        </b>
+                        }                    
+                </h5>
+            </div>
         </div>
         <div class="row">
             @foreach (var assignment in Model)
@@ -54,18 +107,28 @@
                     </div>
                     <div class="card-footer">
                         <div class="text-right">
-                            <a href="#" class="btn btn-sm bg-teal">
-                                <i class="fas fa-comments"></i>
-                            </a>
                                 @if (isTutor)
                                 {
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target="#createEditPopup" onclick="loadCreateForm()"><i class="fas fa-comment"></i> Apply</button>
+                                            data-target="#createEditPopup" onclick="loadCreateForm('@assignment._id.ToString()')">
+                                        <i class="fas fa-comment"></i> Apply
+                                    </button>
 
                                 }
-                                @if (isParent) { 
+                                @if (isParent) {
                                     <p>
-                                        <i class="fas fa-user"></i> Verification is pending
+                                        @if (assignment.IsVerified) {<i class="fas fa-anchor"></i>
+                                            <small>Assignment Posted Sucessfully</small>
+                                            <a asp-controller="Assignment" asp-action="ViewApplicants" asp-route-id="@assignment._id.ToString()" class="btn btn-primary">
+                                                <i class="fas fa-list-ol"></i>
+                                                <span class="badge badge-danger navbar-badge">2</span>View Applications
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <i class="fa fas fa-archive"></i>
+                                            <small> Verification Pending</small>
+                                        }
                                     </p>
                                 }
                                 @if (isAdmin)
@@ -73,7 +136,8 @@
                                     <a href="#" class="btn btn-sm btn-primary">
                                         <i class="fas fa-user"></i> Approve
                                     </a>
-                                }
+                                    <a asp-controller="Assignment" asp-action="ViewApplicants" asp-route-id="@assignment._id.ToString()">View Applications </a>
+                                }                               
                         </div>
                     </div>
                 </div>
@@ -113,8 +177,9 @@
             });
         });
 
-        function loadCreateForm() {
-            $.get('@Url.Action("Create", "AssignmentApplied")', function (data) {
+        function loadCreateForm(assignmentId) {
+            debugger
+            $.get('@Url.Action("Create", "AssignmentApplied")', { id: assignmentId }, function (data) {
                 $('#modalContainer').html(data);
                 $('#createPopup').modal('show');
             });

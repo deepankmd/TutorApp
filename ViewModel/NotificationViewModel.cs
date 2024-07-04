@@ -1,13 +1,12 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using TutorAppAPI.Models;
 
-namespace TutorAppAPI.Models
+namespace TutorAppAPI.ViewModel
 {
-    public class Notification
+    public class NotificationViewModel
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId _id { get; set; }
+        public string _id { get; set; }
         public string UserName { get; set; }
         public string TypeID { get; set; }
         public string Email { get; set; }
@@ -18,19 +17,5 @@ namespace TutorAppAPI.Models
         public bool IsRead { get; set; }
         public DateTime CreatedDate { get; set; }
         public ScreenType ScreenType { get; set; }
-    }
-
-    public enum NotificationType
-    {
-        admin,
-        Parent,
-        Tutor
-    }
-
-    public enum ScreenType
-    {
-        Assignment,
-        TutorRegister,
-        AppliedAssignment
     }
 }

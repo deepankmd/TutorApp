@@ -1,11 +1,7 @@
 ﻿@model IEnumerable<Notification>
-@{
-    Layout = "~/Views/Shared/_LayoutEmpty.cshtml";
-    ViewData["Title"] = "Notifications";
-}
 <div class="row">
 
-@foreach (var notification in Model)
+@foreach (var notification in ViewBag.AdminNotifications)
 {
         <a href="#" class="dropdown-item">
             <!-- Message Start -->

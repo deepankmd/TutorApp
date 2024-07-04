@@ -1,0 +1,141 @@
+﻿@using TutorAppAPI.ViewModel
+@model TutorRegisterViewModel
+
+<form id="uploadForm" enctype="multipart/form-data" asp-action="UploadFiles" asp-controller="Tutor">
+    <div class="row">
+        <div class="card card-outline card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Profile And Experiences</h3>
+            </div>
+
+            <div class="card-body">
+                <div class="form-group">
+                    <label for="exampleInputFile">Profile Image</label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="profileImage" name="profileImage" required/>
+                            <label class="custom-file-label" for="profileImage">Choose Picture</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button id="uploadProfile" type="button" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <div class="image-container img-fluid img-circle" id="image-container"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <p>
+                            Maximum file size of 100 MB, if your file size is too big,
+                            try resizing it smaller using Paint. Or, use an online image compressor tool.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card card-outline card-warning">
+            <div class="card-header">
+                <h3 class="card-title">Experiences</h3>
+            </div>
+
+            <div class="card-body">
+                <p class="text-muted">
+                    <small>
+                        A better portfolio will increase your chances of getting assignments.
+                    </small>
+                </p>
+                <p class="text-muted"><small>Please include:</small></p>
+                <p class="text-muted"><small>- Years of tutoring experience, number of students taught & their improvements</small></p>
+                <p class="text-muted"><small>- Relevant subject grades</small></p>
+                <p class="text-muted"><small>- Relevant subject grades</small></p>
+                <p class="text-muted"><small>- Other teaching experiences or academic achievements (tuition centre, relief teaching, Dean's list, scholarship etc.)</small></p>
+                <textarea cols="70" id="id_experience" maxlength="1500" name="id_experience" rows="3" class="control-form mt-0"></textarea>
+                <p class="text-muted">
+                    <small>Note: Upon demand, you may need to show evidence to support your portfolio. If you leave this blank, it will be difficult to match you with assignments. Please avoid writing a long description of your passion in teaching. Be concise and succinct.</small>
+                </p>
+            </div>
+        </div>
+
+        <div class="card card-outline card-warning">
+            <div class="card-header">
+                <h3 class="card-title">
+                    Upload Documents
+                </h3>
+            </div>
+
+            <div class="card-body">
+                <p class="text-muted">
+                    <small>
+                        You are STRONGLY encouraged to upload your documents. Our coordinators will prioritize shortlisting tutors who have provided us with verified credentials
+                    </small>
+                </p>
+                <p class="text-muted">
+                    <small>
+                        Please upload the following documents:
+                    </small>
+                </p>
+                <p class="text-muted"><small>- Years of tutoring experience, number of students taught & their improvements</small></p>
+                <p class="text-muted">
+                    <small>
+                        - Result slips: for subjects that you want to teach
+                    </small>
+                </p>
+                <p class="text-muted">
+                    <small>
+                        - Graduation certs: for your diploma/degrees
+                    </small>
+                </p>
+                <p class="text-muted">
+                    <small>
+                        - NIE Certs/Teacher's Pass: for MOE teachers
+                    </small>
+                </p>
+                <p class="text-muted">
+                    <small>
+                        Note: Limit of 5 files (image or PDF files, each with ~100MB file size limit)
+                    </small>
+                </p>
+                <p class="text-muted">
+                    <small>
+                        We will not send your certificates to third parties without your consent. Click <a href="">here</a> to our privacy policy
+                    </small>
+                </p>
+            </div>
+
+            <div class="card-body">
+                <div class="form-group">
+                    <div class="input-group">
+                        <div class="custom-file">
+                            <input type="file" multiple class="custom-file-input" id="certInputFile" name="certInputFiles" required>
+                            <label class="custom-file-label" for="certInputFile">Choose files</label>
+                        </div>
+                        <div class="input-group-append">
+                            <button id="uploadCertificate" type="button" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <div class="image-container img-fluid img-circle" id="image-container-cert"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

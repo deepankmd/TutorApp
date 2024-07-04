@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
@@ -12,10 +13,12 @@ namespace TutorAppAPI.Controllers
     public class ParentDetailsController : Controller
     {
         private readonly MongoContext _context;
+        private readonly IMapper _mapper;
 
-        public ParentDetailsController(MongoContext context)
+        public ParentDetailsController(MongoContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -144,7 +147,13 @@ namespace TutorAppAPI.Controllers
             {
                 return NotFound();
             }
-            return View(parentDetails);
+
+            var assignments = await _context.Assignment.Find(_ => _.ParentId == parentDetails._id.ToString()).ToListAsync();
+            var parentDetailsViewModel = _mapper.Map<ParentDetailsViewModel>(parentDetails);
+            var assignmentsViewModel = _mapper.Map<IEnumerable<AssignmentReadViewModel>>(assignments);
+            parentDetailsViewModel.Assignment = assignmentsViewModel.ToList();
+
+            return View(parentDetailsViewModel);
         }
 
         [HttpPost]

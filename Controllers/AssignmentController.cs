@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using System.Net;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
 using TutorAppAPI.Services;
@@ -46,33 +45,37 @@ namespace TutorAppAPI.Controllers
         {
             var assignment = _mapper.Map<Assignment>(assignmentViewModel);
             assignment.ParentId = HttpContext.Session.GetString(UserConstants.UserID);
-            if (ModelState.IsValid)
-            {
-                await _context.Assignment.InsertOneAsync(assignment);
-                return RedirectToAction(nameof(Index));
-            }
+            assignment.AssignmentStatus = AssignmentStatus.Pending;
+
             var parent = (await _context.ParentDetails.FindAsync(_ => _._id.ToString() == assignment.ParentId)).FirstOrDefault();
 
             string emailMessage = $"Dear {parent.Name},\n\n" +
-                                 $"We have successfully created a Assignment for your {parent.RelationShip}, {parent.StudentName}.\n\n" +
-                                 "Thank you for using our service.\n\n Your Details will be verified soon." +
-                                 "We will post you on admin approval\n\n\n" +
-                                 "Best regards,\n" +
-                                 "Your TuitionMasters";
+                               $"We have successfully created a Assignment for your {parent.RelationShip}, {parent.StudentName}.\n\n" +
+                               "Thank you for using our service.\n\n Your Details will be verified soon." +
+                               "We will post you on admin approval\n\n\n" +
+                               "Best regards,\n" +
+                               "Your TuitionMasters";
 
-            Notification notification = new Notification
+
+            if (ModelState.IsValid)
             {
-                UserName = HttpContext.Session.GetString(UserConstants.UserName),
-                Subject = "Assignment Created",
-                Message = "",
-                Email = parent.Email,
-                Mobile = parent.Mobile.ToString(),
-                NotificationType = NotificationType.admin,
-                IsRead = true,
-                CreatedDate = DateTime.UtcNow,
-            };
-            _context.Notification.InsertOne(notification);
-
+                await _context.Assignment.InsertOneAsync(assignment);
+                Notification notification = new Notification
+                {
+                    UserName = HttpContext.Session.GetString(UserConstants.UserName),
+                    Subject = "Assignment Created",
+                    Message = "",
+                    Email = parent.Email,
+                    Mobile = parent.Mobile.ToString(),
+                    NotificationType = NotificationType.admin,
+                    IsRead = false,
+                    TypeID = assignment._id.ToString(),
+                    CreatedDate = DateTime.UtcNow,
+                    ScreenType = ScreenType.Assignment
+                };
+                _context.Notification.InsertOne(notification);
+                return RedirectToAction(nameof(Index));
+            }
             return View(assignment);
         }
 
@@ -101,5 +104,35 @@ namespace TutorAppAPI.Controllers
             }
             return View(assignment);
         }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            var assignments = await _context.Assignment.Find(_ => _._id.ToString()== id).ToListAsync();
+            var parent = await _context.ParentDetails.Find(_ => true).ToListAsync();
+            var assignmentViewModel = _mapper.Map<IEnumerable<AssignmentReadViewModel>>(assignments);
+            assignmentViewModel.Select(_ => _.Address = parent.FirstOrDefault(p => p._id == _.ParentId).Address);
+            return View(assignmentViewModel);
+        }
+
+        public async Task<ActionResult> ViewApplicants(string id)
+        {
+            var appliedAssignments = await _context.AssignmentApplied.Find(_ => _.AssignmentID == id).ToListAsync();
+
+            var assignmentAppliedViewModel = _mapper.Map<IEnumerable<AssignmentAppliedViewModel>>(appliedAssignments);
+            return View(assignmentAppliedViewModel);
+        }
+
+        public async Task<ActionResult> Approve(AssignmentAppliedViewModel assignmentApplied)
+        {
+            var assignment = (await _context.Assignment.FindAsync(_ => _._id.ToString() == assignmentApplied.AssignmentID)).FirstOrDefault();
+
+            assignment.AssignmentStatus = AssignmentStatus.Closed;
+            await _context.Assignment.ReplaceOneAsync(t => t._id == assignment._id, assignment);
+
+            return View(assignmentApplied);
+        }
+
+
+
     }
 }

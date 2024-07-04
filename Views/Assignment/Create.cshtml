@@ -7,14 +7,10 @@
 }
     <div id="createPopup">
         <form asp-action="Create" method="post" id="createForm">
-            <div class="form-group">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" required />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="SubjectsToBeTutored">Subjects To Be Tutored</label>
-            <select id="SubjectsToBeTutored" name="SubjectsToBeTutored" asp-for="SubjectsToBeTutored" class="form-control select2" multiple="multiple" data-placeholder="Select a School" required>
+            <select id="SubjectsToBeTutored" name="SubjectsToBeTutored" asp-for="SubjectsToBeTutored" class="form-control select2" multiple="multiple" data-placeholder="Select a School" >
                 @foreach (var tutorLevel in Model.TutorLevel)
                 {
                     <optgroup label="@tutorLevel.LevelName">
@@ -32,13 +28,27 @@
                 <span asp-validation-for="StudentLevel" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FrequencyOfLessons">Frequency Of Lessons</label>
-                <input asp-for="FrequencyOfLessons" class="form-control" required />
-                <span asp-validation-for="FrequencyOfLessons" class="text-danger"></span>
+            <label asp-for="FrequencyOfLessons">Frequency Of Lessons</label>
+               <br />
+                <input type="radio" class="btn-check" name="FrequencyOfLessons" id="FrequencyOfLessons1" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="FrequencyOfLessons1">1 Lesson/Week</label>
+
+                <input type="radio" class="btn-check" name="FrequencyOfLessons" id="FrequencyOfLessons2" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="FrequencyOfLessons2">2 Lessons/Week</label>
+
+                <input type="radio" class="btn-check" name="FrequencyOfLessons" id="FrequencyOfLessons3" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="FrequencyOfLessons3">3 Lessons/Week</label>
+
+                <input type="radio" class="btn-check" name="FrequencyOfLessons" id="FrequencyOfLessons4" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="FrequencyOfLessons4">4 Lessons/Week</label>
+
+                <input type="radio" class="btn-check" name="FrequencyOfLessons" id="FrequencyOfLessons5" autocomplete="off">
+                <label class="btn btn-outline-secondary" for="FrequencyOfLessons5">5 Lessons/Week</label>
+            <span asp-validation-for="FrequencyOfLessons" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="YourTuitionBudget">Your Tuition Budget</label>
-                <input asp-for="YourTuitionBudget" class="form-control" required />
+                <input asp-for="YourTuitionBudget" class="form-control" required /><small>In Months</small>
                 <span asp-validation-for="YourTuitionBudget" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -47,7 +57,7 @@
                 <span asp-validation-for="TuitionStartDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LengthOfCommitment">Length Of Commitment</label>
+                <label asp-for="LengthOfCommitment">Length Of Commitment (Duration)</label>
                 <input asp-for="LengthOfCommitment" class="form-control" required />
                 <span asp-validation-for="LengthOfCommitment" class="text-danger"></span>
             </div>
@@ -112,8 +122,11 @@
             </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </form>
-    </div>
 
+        
+
+    </div>
+  
 <script>
     document.getElementById('createForm').addEventListener('submit', function (event) {
         var checkboxes = document.querySelectorAll('.availability-checkbox');

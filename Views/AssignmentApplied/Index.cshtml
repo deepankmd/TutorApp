@@ -1,1 +1,40 @@
-﻿
+﻿@using TutorAppAPI.ViewModel
+@model IEnumerable<AssignmentAppliedViewModel>
+
+@{
+    ViewData["Title"] = "Assignment";
+}
+@using System.Security.Claims
+@using TutorAppAPI.Helpers
+@{
+    var user = User;
+    var isAdmin = user.IsInRole(UserConstants.AdminRole);
+    var isTutor = user.IsInRole(UserConstants.TutorRole);
+    var isParent = user.IsInRole(UserConstants.ParentDetails);
+}
+
+<div class="row">
+    @foreach (var assignmentsApplied in Model)
+    {
+        <div class="row">
+            @assignmentsApplied._id.ToString()
+        </div>
+
+        <div class="row">
+            <p><small>$ @assignmentsApplied.YourRate</small></p>
+        </div>
+
+        <div class="row">
+            <p>$ @assignmentsApplied.AllAvailableTimings</p>
+        </div>
+
+        <div class="row">
+            <p>$ @assignmentsApplied.WhenCanYouStartEarliest</p>
+        </div>
+
+        <div class="row">
+            <p>$ @assignmentsApplied.WhyShouldYouBeChosen</p>
+        </div>
+    }
+</div>
+

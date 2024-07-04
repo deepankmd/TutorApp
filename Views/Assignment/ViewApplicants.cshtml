@@ -1,0 +1,30 @@
+﻿@using TutorAppAPI.ViewModel
+@model IEnumerable<AssignmentAppliedViewModel>
+
+@{
+    ViewData["Title"] = "Tutor Applied Assignment";
+}
+@using System.Security.Claims
+@using TutorAppAPI.Helpers
+
+<div class="container">
+    <div class="row">
+        @foreach (var assignment in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        
+                        <p class="card-text"><strong>Rate:</strong> $@assignment.YourRate</p>
+                        <p class="card-text"><strong>Available Timings:</strong> @assignment.AllAvailableTimings</p>
+                        <p class="card-text"><strong>Earliest Start:</strong> @assignment.WhenCanYouStartEarliest</p>
+                        <p class="card-text"><strong>Reason to be Chosen:</strong> @assignment.WhyShouldYouBeChosen</p>
+                        <p class="card-text"><strong>Tutor Location:</strong> @assignment.TutorLocation</p>
+                        <p class="card-text"><strong>Tutor Name:</strong> @assignment.TutorName</p>
+                        <a asp-action="Approve" asp-controller="Assignment" asp-route-id="@assignment.AssignmentID" class="btn btn-primary">Approve</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

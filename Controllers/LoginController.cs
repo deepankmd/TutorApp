@@ -28,7 +28,7 @@ namespace TutorAppAPI.Controllers
         public async Task<IActionResult> UserLogin(LoginViewModel loginViewModel)
         {
             var userRecord = _context.ParentDetails
-                .Find(a => (a.Email == loginViewModel.Email || a.Mobile == int.Parse(loginViewModel.Email)) && a.Password == loginViewModel.Password);
+                .Find(a => (a.Email == loginViewModel.Email || a.Mobile.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
 
             if (userRecord?.FirstOrDefault() != null)
             {
@@ -58,7 +58,7 @@ namespace TutorAppAPI.Controllers
             else if (userRecord.FirstOrDefault() == null)
             {
                 var tutor = _context.Tutors
-                    .Find(a => (a.Email == loginViewModel.Email || a.MobileNumber == long.Parse(loginViewModel.Email)) && a.Password == loginViewModel.Password);
+                    .Find(a => (a.Email == loginViewModel.Email || a.MobileNumber.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
 
                 if (tutor.FirstOrDefault() != null)
                 {
@@ -112,15 +112,15 @@ namespace TutorAppAPI.Controllers
             {
 
                 string emailMessage = $"Dear {model.Email},\n\n" +
-                                $"We received a request to reset your password for your Tutor Master account. To proceed with resetting your password, please click the link below:\r\n\n\n" +
+                                $"We received a request to reset your password for your Tuition Master account. To proceed with resetting your password, please click the link below:\r\n\n\n" +
                                 "[Reset Password Link]\r\n" +
                                 "If you did not request a password reset, please disregard this email or contact our support team immediately.\r\n" +
-                                "Thank you for using Tutor Master.\r\n"+
+                                "Thank you for using Tuition Master.\r\n"+
                                 "Best regards,\n" +
-                                "Your Tuition Masters\n"+
+                                "Your Tuition Master\n"+
                                 "Admin Team\n";
 
-                NotificationService.SendEmailAsync(model.Email, "Tutor Master Password Reset Request", emailMessage);
+                NotificationService.SendEmailAsync(model.Email, "Tuition Master Password Reset Request", emailMessage);
                 ViewBag.Message = "A reset link has been sent to your email.";
                 return View("ResetPasswordConfirmation");
             }

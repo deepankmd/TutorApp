@@ -3,20 +3,32 @@
     ViewData["Title"] = "Notifications";
 }
 <div class="row">
-
-@foreach (var notification in Model)
-{
+    @foreach (var notification in Model)
+    {
         <div class="col-md-4">
-
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="card-title">@notification.Subject @notification.UserName</h5>
-                <p class="card-text">@notification.Message</p>
-                <p class="card-text">
-                    <small class="text-muted">@notification.CreatedDate.ToString("MMM dd yyyy hh:mm")</small>
-                </p>
-            </div>
+            <a asp-action="NotificationDetail" asp-controller="Notification"
+               asp-route-id="@notification._id"
+               asp-route-typeId="@notification.TypeID" asp-route-screenType="@notification.ScreenType">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">@notification.Subject @notification.UserName</h5>
+                        <p class="card-text">@notification.Message</p>
+                        <p class="card-text">
+                            <small class="text-muted">@notification.CreatedDate.ToString("MMM dd yyyy hh:mm")</small>
+                        </p>
+                        <p class="card-text">
+                            @if (notification.IsRead)
+                            {
+                                <small>Read / Verified</small>
+                            }
+                            else
+                            {
+                                <small>Pending</small>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </a>
         </div>
-        </div>
-}
+    }
 </div>

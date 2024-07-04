@@ -1,7 +1,8 @@
-﻿@model AssignmentApplied
+﻿@using TutorAppAPI.ViewModel
+@model AssignmentAppliedViewModel
 @{
     Layout = "~/Views/Shared/_LayoutWithoutAnyMenu.cshtml";
-    ViewData["Title"] = "Create Assignment";
+    ViewData["Title"] = "Apply Assignment";
 }
 
 <div class="modal" id="createPopup" tabindex="-1" role="dialog">
@@ -15,6 +16,9 @@
             <div class="modal-body">
                 <form asp-action="Create" method="post" id="createForm">
                     @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="AssignmentID" class="form-control" required />
+                    <input type="hidden" asp-for="TutorName" class="form-control" required />
+                    <input type="hidden" asp-for="UserID" class="form-control" required />
 
                     <div class="form-group">
                         <label asp-for="YourRate">Your Rate (/h)</label>

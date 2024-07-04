@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+ @model TutorAppAPI.ViewModel.TutorRegisterViewModel
+@{
+    Layout = "~/Views/Shared/_LayoutWithoutAnyMenu.cshtml";
+    ViewData["Title"] = "Tutor Registration";
+}
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tuition Master </title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="~/lib/bs-stepper/css/bs-stepper.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TutorAppAPI.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+    <link href="~/lib/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link href="~/dist/css/adminlte.min.css" rel="stylesheet" />
+    <link href="~/lib/overlayscrollbars/css/overlayscrollbars.min.css" rel="stylesheet" />
+    <link href="~/lib/summernote/summernote-bs4.min.css" rel="stylesheet" />
+    <link href="~/lib/daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <link href="~/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link href="~/lib/select2-bootstrap4-theme/select2-bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-switch/css/bootstrap2/bootstrap-switch.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet" />
+    <style>
+    .image-container  {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
+
+        .image-container img {
+            width: 150px; 
+            height: 150px; 
+            border-radius: 50%;
+            object-fit: cover; 
+        }
+    </style>
+
+</head>
+<body>
+    <div class="card">
+        <div class="row">
+            <input type="hidden" id="modelId" name="modelId" value="Model._id" />
+            <input type="hidden" id="id" name="id" value="" />
+
+            <section class="content">
+                <div class="col-md-12">
+                    <div class="card card-default">
+                        <div class="card-body p-0">
+                            <div class="bs-stepper">
+                                <div class="bs-stepper-header" role="tablist">
+                                    <!-- your steps here -->
+                                    <div class="step" data-target="#logins-part">
+                                        <button type="button" class="step-trigger" role="tab" aria-controls="logins-part" id="logins-part-trigger">
+                                            <span class="bs-stepper-circle">1</span>
+                                            <span class="bs-stepper-label">Account Info</span>
+                                        </button>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div class="step" data-target="#tutorpref-part">
+                                        <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+                                            <span class="bs-stepper-circle">2</span>
+                                            <span class="bs-stepper-label">Tutor Preferences</span>
+                                        </button>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div class="step" data-target="#agencymanager-part">
+                                        <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+                                            <span class="bs-stepper-circle">3</span>
+                                            <span class="bs-stepper-label">Education And Qualifications</span>
+                                        </button>
+                                    </div>
+                                    <div class="line"></div>
+                                    <div class="step" data-target="#information-part">
+                                        <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
+                                            <span class="bs-stepper-circle">4</span>
+                                            <span class="bs-stepper-label">Profile</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="bs-stepper-content">
+                                    <div id="logins-part" class="content" role="tabpanel" aria-labelledby="logins-part-trigger">
+                                        @Html.Partial("AccountInfo", Model)
+
+                                        <a id="logininfo" class="btn btn-primary">Next</a>
+                                    </div>
+
+                                    <div id="tutorpref-part" class="content" role="tabpanel" aria-labelledby="tutorpref-part-trigger">
+                                         @Html.Partial("TutorPreference", Model)
+
+                                        <a id="tutorinfo" class="btn btn-primary" onclick="stepper.back()">Previous</a>
+                                        <a id="tutorinfoNext" class="btn btn-primary  float-right">Next</a>
+
+                                    </div>
+
+                                    <div id="agencymanager-part" class="content" role="tabpanel" aria-labelledby="agencymanager-part-trigger">
+
+                                        @Html.Partial("AgencyManager", Model)
+
+                                        <a class="btn btn-primary float-left" onclick="stepper.previous()">Previous</a>
+                                        <a id="managerbutton" class="btn btn-primary float-right">Next</a>
+                                        <br />
+                                    </div>
+
+                                    <div id="information-part" class="content" role="tabpanel" aria-labelledby="information-part-trigger">
+                                        @Html.Partial("Uploader", Model)
+                                        <button class="btn btn-primary" onclick="stepper.previous()">Previous</button>
+                                        <button asp-action="RegisterTutor" type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </section>
+        </div>
+
+    </div>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/select2/js/select2.full.min.js"></script>
+    <script src="~/lib/moment/moment.min.js"></script>
+    <script src="~/lib/daterangepicker/daterangepicker.js"></script>
+    <script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="~/lib/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+    <script src="~/lib/bs-stepper/js/bs-stepper.min.js"></script>
+    <script src="~/lib/overlayscrollbars/js/jquery.overlayscrollbars.min.js"></script>
+
+    <script>
+        $(function () {
+            
+            $('.select2').select2();
+            
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            });
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            });
+
+            $("#colapse-menu").click();
+
+            $('#logininfo').on('click', function (e) {
+                var form = $('#accountInfoForm');
+                debugger
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateAccountInfo", "RegisterTutor")',
+                    data: $("#accountInfoForm").serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            stepper.next();
+                            $("#id").val(response.message);
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: ", xhr.status, status, error);
+
+                        alert("An error occurred while saving the data. Please try again later.");
+                    }
+                });
+            });
+
+            $('#tutorinfoNext').on('click', function (e) {
+                var form = $('#tutorPrefForm');
+                debugger
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateTutorPref", "RegisterTutor")',
+                    data: $("#tutorPrefForm").serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            stepper.next();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: ", xhr.status, status, error);
+
+                        alert("An error occurred while saving the data. Please try again later.");
+                    }
+                });
+            });
+
+            $('#managerbutton').on('click', function (e) {
+                var form = $('#educationForm');
+                debugger
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateEducation", "RegisterTutor")',
+                    data: $("#educationForm").serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            stepper.next();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: ", xhr.status, status, error);
+
+                        alert("An error occurred while saving the data. Please try again later.");
+                    }
+                });
+            });
+
+            $('#uploadDataCertificate').on('click', function (e) {
+                var form = $('#uploadForm')[0];
+                var formData = new FormData(form);
+                debugger
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("UpdateFileCertificate", "RegisterTutor")',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            stepper.next();
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: ", xhr.status, status, error);
+
+                        alert("An error occurred while saving the data. Please try again later.");
+                    }
+                });
+            });
+
+            $('#uploadProfile').on('click', function (e) {
+                debugger
+                var formData = new FormData();
+                var profileImage = $('#profileImage')[0].files[0];
+                formData.append('profileImage', profileImage);
+
+                $.ajax({
+                    url: '/RegisterTutor/UploadProfileImage',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (data.success) {
+                            var imageContainer = $('#image-container');
+                            var img = $('<img>', { src: data.imagePath, class: 'img-fluid img-circle' });
+                            imageContainer.empty().append(img);
+                        } else {
+                            alert('Profile image upload failed');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX Error: ", xhr.status, status, error);
+                        alert('Error uploading profile image');
+                    }
+                });
+            });
+            $('#uploadCertificate').on('click', function (e) {
+                var formData = new FormData();
+                var certInputFiles = $('#certInputFile')[0].files;
+
+                for (var i = 0; i < certInputFiles.length; i++) {
+                    formData.append('certInputFiles', certInputFiles[i]);
+                }
+
+                $.ajax({
+                    url: '/RegisterTutor/UploadCertificates',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        if (data.success) {
+                            var certContainer = $('#image-container-cert');
+                            certContainer.empty();
+                            data.imagePaths.forEach(function (path) {
+                                var img = $('<img>', { src: path, class: 'img-fluid img-circle' });
+                                certContainer.append(img);
+                            });
+                        } else {
+                            alert('Certificates upload failed');
+                        }
+                    },
+                    error: function () {
+                        alert('Error uploading certificates');
+                    }
+                });
+            });
+        });
+
+
+        // BS-Stepper Init
+        document.addEventListener('DOMContentLoaded', function () {
+            window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+        });
+
+        
+
+    </script>
+</body>
+</html>

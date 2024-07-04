@@ -10,11 +10,7 @@
 <div id="editPopup">
     <form asp-action="Edit" method="post" id="editForm">
         <input type="hidden" asp-for="_id" />
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input asp-for="Email" class="form-control" required />
-            <span asp-validation-for="Email" class="text-danger"></span>
-        </div>
+        
         <div class="form-group">
             <label asp-for="SubjectsToBeTutored"></label>
             <input asp-for="SubjectsToBeTutored" class="form-control" required />

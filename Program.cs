@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http.Features;
 using System.Security.Claims;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Services;
@@ -13,6 +14,10 @@ var mongodbSetting = new MongoDbSettings();
 builder.Configuration.GetSection("MongoDbSettings").Bind(mongodbSetting);
 builder.Services.Configure<MongoDbSettings>(builder.Configuration.GetSection("MongoDbSettings"));
 builder.Services.AddSingleton(new MongoContext(mongodbSetting.ConnectionString, mongodbSetting.DatabaseName));
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 100 MB
+});
 
 builder.Services.AddScoped<AdminService>();
 builder.Services.AddScoped<EducationLevelServices>();

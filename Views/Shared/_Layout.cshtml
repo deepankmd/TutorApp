@@ -1,7 +1,9 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
  @using System.Security.Claims
+@using Newtonsoft.Json
 @using TutorAppAPI.Helpers
+@using TutorAppAPI.ViewModel
 @{
     var user = User;
     var isAdmin = user.IsInRole(UserConstants.AdminRole);
@@ -12,7 +14,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Tutor Master </title>
+    <title>@ViewData["Title"] - Tuition Master </title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="~/lib/bs-stepper/css/bs-stepper.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -54,7 +56,7 @@
                 @if (!isAdmin || !isTutor || !isParent)
                 {
                     <li class="nav-item">
-                        <form id="logoutForm" asp-controller="Login" title="Logout" asp-action="Logout" method="post">
+                        <form id="logoutForm1" asp-controller="Login" title="Logout" asp-action="Logout" method="post">
                             <button type="submit" class="nav-link" title="Logout"><i class="fa fas fa-lock"></i></button>
                         </form>
                     </li>
@@ -62,41 +64,51 @@
                 
                 <!-- Messages Dropdown Menu -->
                 <li class="nav-item dropdown">
+                     @{
+                            if (isAdmin || Context.Session != null)
+                            {
+                                var notificationsJson = Context.Session.GetString("Notification");
+                                var notifications = string.IsNullOrEmpty(notificationsJson) ? new List<NotificationViewModel>() : JsonConvert.DeserializeObject<List<NotificationViewModel>>(notificationsJson);
+                                
                     <a id ="notificationPane" class="nav-link" data-toggle="dropdown" href="#">
                         <i class="far fa-comments"></i>
-                        <span class="badge badge-danger navbar-badge">3</span>
+                                <span class="badge badge-danger navbar-badge">@notifications.Count</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" id="notificationDropdown">
+
+                       <div class="row">
+                                    @foreach (var notification in notifications)
+                                    {
+                                        <a asp-action="NotificationDetail" asp-controller="Notification"
+                                           asp-route-id="@notification._id"
+                                           asp-route-typeId="@notification.TypeID" asp-route-screenType="@notification.ScreenType"
+                                        class="dropdown-item">
+                                            <!-- Message Start -->
+                                            <div class="media">
+                                                <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                                <div class="media-body">
+                                                    <h3 class="dropdown-item-title">
+                                                        @notification.UserName
+                                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                                    </h3>
+                                                    <p class="text-sm">@notification.Subject...</p>
+                                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> @notification.CreatedDate.ToString("dd MMM yyyy hh:mm") </p>
+                                                </div>
+                                            </div>
+                                            <!-- Message End -->
+                                        </a>
+                                        <div class="dropdown-divider"></div>
+                                    }
+                                </div>
+                        
+
                         <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
                     </div>
+                        }
+                    }
                 </li>
-                <!-- Notifications Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
-                        <span class="badge badge-warning navbar-badge">15</span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-item dropdown-header">15 Notifications</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-envelope mr-2"></i> 4 new messages
-                            <span class="float-right text-muted text-sm">3 mins</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-users mr-2"></i> 8 friend requests
-                            <span class="float-right text-muted text-sm">12 hours</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item">
-                            <i class="fas fa-file mr-2"></i> 3 new reports
-                            <span class="float-right text-muted text-sm">2 days</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-                    </div>
-                </li>
+                <!-- Notifications Dropdown Menu To be updated -->
+                
                 <li class="nav-item">
                     <a class="nav-link" data-widget="fullscreen" href="#" role="button">
                         <i class="fas fa-expand-arrows-alt"></i>
@@ -112,7 +124,7 @@
     <!-- Brand Logo -->
             <a href="index3.html" class="brand-link">
                 <img src="~/dist/img/logo-sm.png" class="brand-image img-circle elevation-3" style="opacity: .8" />
-             <span class="brand-text font-weight-light">Tutor Master</span>
+                <span class="brand-text font-weight-light">Tuition Master</span>
     </a>
 
     <!-- Sidebar -->
@@ -261,7 +273,7 @@
                 @if (isAdmin || isTutor || isParent)
                 {
                     <li class="nav-item">
-                        <form id="logoutForm" asp-controller="Login" asp-action="Logout" method="post">
+                        <form id="logoutForm2" asp-controller="Login" asp-action="Logout" method="post">
                             <button type="submit" class="nav-link"><i class="fa fas fa-lock"></i>Logout</button>
                         </form>
                     </li>
@@ -296,7 +308,7 @@
             <div class="float-right d-none d-sm-block">
                 <b>Version</b> 1.0.0
             </div>
-            <strong>Copyright &copy; @DateTime.Now.Year <a href="~/Home">Tutor Master</a>.</strong> All rights reserved.
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="~/Home">Tuition Master</a>.</strong> All rights reserved.
         </footer>
 
         <!-- Control Sidebar -->
@@ -335,15 +347,15 @@
             });
             $("#colapse-menu").click();
 
-            $('#notificationPane').on('click', function () {
-                $.ajax({
-                    url: '@Url.Action("NotifyPanel", "Notification")',
-                    type: 'GET',
-                    success: function (result) {
-                        $('#notificationDropdown').html(result);
-                    }
-                });
-            });
+            // $('#notificationPane').on('click', function () {
+            //     $.ajax({
+            //         url: '@Url.Action("NotifyPanel", "Notification")',
+            //         type: 'GET',
+            //         success: function (result) {
+            //             $('#notificationDropdown').html(result);
+            //         }
+            //     });
+            // });
         });
         // BS-Stepper Init
         document.addEventListener('DOMContentLoaded', function () {

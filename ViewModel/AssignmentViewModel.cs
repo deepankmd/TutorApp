@@ -9,7 +9,6 @@ namespace TutorAppAPI.ViewModel
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId _id { get; set; }
-        public string Email { get; set; }
         public string SubjectsToBeTutored { get; set; }
         public string StudentLevel { get; set; }
         public string FrequencyOfLessons { get; set; }
