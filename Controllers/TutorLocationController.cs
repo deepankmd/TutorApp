@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using TutorAppAPI.Models;
+using TutorAppAPI.Repository;
 using TutorAppAPI.Services;
 
 namespace TutorAppAPI.Controllers
@@ -8,16 +9,18 @@ namespace TutorAppAPI.Controllers
     public class TutorLocationsController : Controller
     {
         private readonly MongoContext _context;
+        private readonly ITutorLocationRepository _tutorLocationRepository;
 
-        public TutorLocationsController(MongoContext context)
+        public TutorLocationsController(MongoContext context, ITutorLocationRepository tutorLocationRepository)
         {
             _context = context;
+            _tutorLocationRepository = tutorLocationRepository;
         }
 
         public async Task<IActionResult> Index()
         {
-            var tutorLocations = await _context.TutorLocations.Find(_ => true).ToListAsync();
-            return View(tutorLocations);
+            var locations = await _tutorLocationRepository.GetAllAsync();
+            return View(locations);
         }
 
         public IActionResult Create() => PartialView();
@@ -27,7 +30,8 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _context.TutorLocations.InsertOneAsync(tutorLocation);
+                tutorLocation.ID = Guid.NewGuid();
+                await _tutorLocationRepository.AddAsync(tutorLocation);
                 return RedirectToAction(nameof(Index));
             }
             return PartialView(tutorLocation);
@@ -35,12 +39,10 @@ namespace TutorAppAPI.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            var tutorLocation = await _context.TutorLocations.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
-            if (tutorLocation == null)
-            {
-                return NotFound();
-            }
-            return PartialView(tutorLocation);
+            var location = await _tutorLocationRepository.GetByIdAsync(Guid.Parse(id));
+            if (location == null) return NotFound();
+
+            return PartialView(location);
         }
 
         [HttpPost]
@@ -48,7 +50,7 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _context.TutorLocations.ReplaceOneAsync(t => t._id == tutorLocation._id, tutorLocation);
+                await _tutorLocationRepository.UpdateAsync(tutorLocation);
                 return RedirectToAction(nameof(Index));
             }
             return PartialView(tutorLocation);
@@ -57,7 +59,7 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            await _context.TutorLocations.DeleteOneAsync(t => t._id.ToString() == id);
+            await _tutorLocationRepository.DeleteAsync(Guid.Parse(id));
             return RedirectToAction(nameof(Index));
         }
     }

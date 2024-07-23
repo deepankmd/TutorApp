@@ -1,13 +1,8 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-
-namespace TutorAppAPI.Models
+﻿namespace TutorAppAPI.Models
 {
     public class Notification
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId _id { get; set; }
+        public Guid ID { get; set; }
         public string UserName { get; set; }
         public string TypeID { get; set; }
         public string Email { get; set; }

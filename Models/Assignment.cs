@@ -1,13 +1,8 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-
-namespace TutorAppAPI.Models
+﻿namespace TutorAppAPI.Models
 {
     public class Assignment
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId _id { get; set; }
+        public Guid ID { get; set; }
         public string SubjectsToBeTutored { get; set; }
         public string StudentLevel { get; set; }
         public string FrequencyOfLessons { get; set; }

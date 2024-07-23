@@ -155,19 +155,19 @@
                                                     <div class="card card-secondary">
                                                         <div class="card-header">
                                                             <h4 class="card-title w-100">
-                                                                <a class="d-block w-100" data-toggle="collapse" href="#collapse@(tutorLevel._id)">
+                                                                <a class="d-block w-100" data-toggle="collapse" href="#collapse@(tutorLevel.ID)">
                                                                     @tutorLevel.LevelName <!-- Use the level name or any other property you want to display -->
                                                                 </a>
                                                             </h4>
                                                         </div>
-                                                        <div id="collapse@(tutorLevel._id)" class="collapse" data-parent="#accordion">
+                                                        <div id="collapse@(tutorLevel.ID)" class="collapse" data-parent="#accordion">
                                                             <div class="card-body">
 
                                                                 <div class="form-group">
-                                                                    @foreach (var subject in Model.TutoringPreferences.TutorSubject.Where(_ => _.TutorLevelID == tutorLevel._id.ToString()))
+                                                                    @foreach (var subject in Model.TutoringPreferences.TutorSubject.Where(_ => _.TutorLevelID == tutorLevel.ID.ToString()))
                                                                     {
                                                                             <div class="form-check form-check-inline">
-                                                                                <input for="selectedSubjects" class="form-check-input" type="checkbox" name="selectedSubjects" value="@subject._id.ToString()" id="subject@(subject._id)" required>
+                                                                                <input for="selectedSubjects" class="form-check-input" type="checkbox" name="selectedSubjects" value="@subject.ID.ToString()" id="subject@(subject.ID)" required>
                                                                                 <label class="form-check-label" for="selectedSubjects">
                                                                                     @subject.Name
                                                                                 </label>
@@ -247,7 +247,7 @@
                                         <select id="EducationLevelSelected" name="EducationLevelSelected" asp-for="EducationLevelSelected" class="form-control select2" multiple="multiple" data-placeholder="Select a Level" required>
                                         @foreach (var educationLevel in Model.EducationLevel)
                                         {
-                                            <option id="id@(educationLevel._id)" value="@educationLevel.Name">@educationLevel.Name</option>
+                                            <option id="id@(educationLevel.ID)" value="@educationLevel.Name">@educationLevel.Name</option>
                                         }
                                     </select>
                                 </div>
@@ -257,7 +257,7 @@
                                         <select id="TutorCategorySelected" name="TutorCategorySelected" asp-for="TutorCategorySelected" class="form-control select2" multiple="multiple" data-placeholder="Select a Category" required>
                                         @foreach (var tutorCategory in Model.TutorCategory)
                                         {
-                                            <option id="id@(tutorCategory._id)" value="@tutorCategory.Name">@tutorCategory.Name</option>
+                                            <option id="id@(tutorCategory.ID)" value="@tutorCategory.Name">@tutorCategory.Name</option>
                                         }
                                     </select>
                                 </div>
@@ -274,7 +274,7 @@
                                                 <select id="TutorSchools" name="TutorSchools" asp-for="TutorSchool" class="form-control select2" multiple="multiple" data-placeholder="Select a School" required>
                                                 @foreach (var tutorSchools in Model.TutorSchool)
                                                 {
-                                                    <option id="id@(tutorSchools._id)" value="@tutorSchools.Name">@tutorSchools.Name</option>
+                                                    <option id="id@(tutorSchools.ID)" value="@tutorSchools.Name">@tutorSchools.Name</option>
                                                 }
                                             </select>
                                         </div>
@@ -416,19 +416,19 @@
                                                 <div class="card card-secondary">
                                                     <div class="card-header">
                                                         <h4 class="card-title w-100">
-                                                            <a class="d-block w-100" data-toggle="collapse" href="#collapse@(tutorgrade._id)">
+                                                            <a class="d-block w-100" data-toggle="collapse" href="#collapse@(tutorgrade.ID)">
                                                                 @tutorgrade.Name <!-- Use the level name or any other property you want to display -->
                                                             </a>
                                                         </h4>
                                                     </div>
-                                                    <div id="collapse@(tutorgrade._id)" class="collapse" data-parent="#accordion">
+                                                    <div id="collapse@(tutorgrade.ID)" class="collapse" data-parent="#accordion">
                                                         <div class="card-body">
                                                             <div class="form-group">
                                                                 <label asp-for="SchoolGrade">Schools:</label>
-                                                                    <select id="SchoolGrade@(tutorgrade._id)" name="TutorSchools" asp-for="SchoolGrade" class="form-control select2" multiple="multiple" data-placeholder="Select a School" required>
+                                                                    <select id="SchoolGrade@(tutorgrade.ID)" name="TutorSchools" asp-for="SchoolGrade" class="form-control select2" multiple="multiple" data-placeholder="Select a School" required>
                                                                     @foreach (var tutorSchools in Model.TutorSchool)
                                                                     {
-                                                                        <option id="SchoolGradeid@(tutorSchools._id)" value="@tutorSchools.Name">@tutorSchools.Name</option>
+                                                                        <option id="SchoolGradeid@(tutorSchools.ID)" value="@tutorSchools.Name">@tutorSchools.Name</option>
                                                                     }
                                                                 </select>
                                                                 <br />
@@ -449,15 +449,15 @@
                                                                     </div>
 
                                                                     <div class="row">
-                                                                        @foreach (var tutorGradesSubject in Model.TutorGradesSubject.Where(_ => _.GradeId == tutorgrade._id.ToString()))
+                                                                        @foreach (var tutorGradesSubject in Model.TutorGradesSubject.Where(_ => _.GradeId == tutorgrade.ID.ToString()))
                                                                         {
                                                                             <div class="col-md-6">
-                                                                                <label for="@tutorGradesSubject._id">@tutorGradesSubject.Name</label>
+                                                                                <label for="@tutorGradesSubject.ID">@tutorGradesSubject.Name</label>
 
-                                                                                <select id="tutorGradesSubject@(tutorGradesSubject._id)" name="TutorGradesSubjects" for="TutorGradesSubjects" class="form-control select2" multiple="multiple" data-placeholder="Select a Value" required>
-                                                                                    @foreach (var tutorSchools in Model.TutorGradeValues.Where(_ => _.TutorGradeSubjectID == tutorGradesSubject._id.ToString()))
+                                                                                <select id="tutorGradesSubject@(tutorGradesSubject.ID)" name="TutorGradesSubjects" for="TutorGradesSubjects" class="form-control select2" multiple="multiple" data-placeholder="Select a Value" required>
+                                                                                    @foreach (var tutorSchools in Model.TutorGradeValues.Where(_ => _.TutorGradeSubjectID == tutorGradesSubject.ID.ToString()))
                                                                                     {
-                                                                                        <option id="SchoolGradeid@(tutorSchools._id)" value="@tutorSchools.Name">@tutorSchools.Name</option>
+                                                                                        <option id="SchoolGradeid@(tutorSchools.ID)" value="@tutorSchools.Name">@tutorSchools.Name</option>
                                                                                     }
                                                                                 </select>
                                                                                 

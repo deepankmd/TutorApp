@@ -1,30 +1,33 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using TutorAppAPI.Models;
+using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
 
 public class TutorSubjectController : Controller
 {
     private readonly MongoContext _dbContext;
+    private readonly IRepository<TutorSubject> _repository;
+    private readonly IRepository<TutorLevel> _tutorLevelRepository;
 
-    public TutorSubjectController(MongoContext dbContext)
+    public TutorSubjectController(MongoContext dbContext, IRepository<TutorSubject> repository, IRepository<TutorLevel> tutorLevelRepository)
     {
         _dbContext = dbContext;
+        _repository = repository;
+        _tutorLevelRepository = tutorLevelRepository;
     }
 
     // GET: TutorSubject/Index
     public async Task<IActionResult> Index()
     {
-        var tutorSubjects = await _dbContext.TutorSubject.Find(new BsonDocument()).ToListAsync();
-        return View(tutorSubjects);
+        var entity = await _repository.GetAllAsync();
+        return View(entity);
     }
 
     // GET: TutorSubject/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        PopulateTutorLevels();
+        await PopulateTutorLevels();
         return PartialView("Create");
     }
 
@@ -34,11 +37,12 @@ public class TutorSubjectController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _dbContext.TutorSubject.InsertOneAsync(tutorSubject);
+            tutorSubject.ID = Guid.NewGuid();
+            await _repository.AddAsync(tutorSubject);
             return RedirectToAction(nameof(Index));
         }
 
-        PopulateTutorLevels();
+        await PopulateTutorLevels();
         return PartialView("Create", tutorSubject);
     }
 
@@ -50,14 +54,10 @@ public class TutorSubjectController : Controller
             return NotFound();
         }
 
-        var objectId = new ObjectId(id);
-        var tutorSubject = await _dbContext.TutorSubject.Find(ts => ts._id == objectId).FirstOrDefaultAsync();
-        if (tutorSubject == null)
-        {
-            return NotFound();
-        }
+        var tutorSubject = await _repository.GetByIdAsync(Guid.Parse(id));
+        if (tutorSubject == null) return NotFound();
 
-        PopulateTutorLevels();
+        await PopulateTutorLevels();
         return PartialView("Edit", tutorSubject);
     }
 
@@ -65,19 +65,19 @@ public class TutorSubjectController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(string id, TutorSubject tutorSubject)
     {
-        if (id != tutorSubject._id.ToString())
+        if (id != tutorSubject.ID.ToString())
         {
             return NotFound();
         }
 
         if (ModelState.IsValid)
         {
-            var objectId = new ObjectId(id);
-            await _dbContext.TutorSubject.ReplaceOneAsync(ts => ts._id == objectId, tutorSubject);
+            tutorSubject.ID = Guid.Parse(id);
+            await _repository.UpdateAsync(tutorSubject);
             return RedirectToAction(nameof(Index));
         }
 
-        PopulateTutorLevels();
+        await PopulateTutorLevels();
         return PartialView("Edit", tutorSubject);
     }
 
@@ -85,18 +85,18 @@ public class TutorSubjectController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
-        var objectId = new ObjectId(id);
-        await _dbContext.TutorSubject.DeleteOneAsync(ts => ts._id == objectId);
+        var level = await _repository.GetByIdAsync(Guid.Parse(id));
+        if (level == null) return NotFound();
         return RedirectToAction(nameof(Index));
     }
 
-    private void PopulateTutorLevels()
+    private async Task PopulateTutorLevels()
     {
-        var tutorLevels = _dbContext.TutorLevel.Find(new BsonDocument()).ToList();
+        var tutorLevels = await _tutorLevelRepository.GetAllAsync();
 
         var selectedItemsTuterLevel = tutorLevels.Select(_ => new SelectList(new List<SelectListItem>
         {
-            new SelectListItem { Value = _._id.ToString(), Text = _.LevelName },
+            new SelectListItem { Value = _.ID.ToString(), Text = _.LevelName },
             }, "Value", "Text"));
         ViewBag.TutorLevels = selectedItemsTuterLevel;
     }

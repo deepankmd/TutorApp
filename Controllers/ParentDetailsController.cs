@@ -5,20 +5,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
-using TutorAppAPI.Services;
+using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.ViewModel;
 
 namespace TutorAppAPI.Controllers
 {
     public class ParentDetailsController : Controller
     {
-        private readonly MongoContext _context;
         private readonly IMapper _mapper;
+        private readonly IRepository<ParentDetails> _repository;
+        private readonly IRepository<Notification> _repositoryNotification;
+        private readonly IRepository<Assignment> _repositoryAssignment;
 
-        public ParentDetailsController(MongoContext context, IMapper mapper)
+        public ParentDetailsController(IMapper mapper, IRepository<ParentDetails> repository)
         {
-            _context = context;
             _mapper = mapper;
+            _repository = repository;
         }
 
         public async Task<IActionResult> Index()
@@ -26,11 +28,12 @@ namespace TutorAppAPI.Controllers
             if (HttpContext.Session != null)
             {
                 string userID = HttpContext.Session.GetString(UserConstants.UserID);
-                var parentDetails = await _context.ParentDetails.Find(_ => _._id.ToString() == userID).ToListAsync();
+                var parentDetails = await _repository.GetByIdAsync(Guid.Parse(userID));
                 return View(parentDetails);
             }
-            else {
-                var parentDetails = await _context.ParentDetails.Find(_ => true).ToListAsync();
+            else
+            {
+                var parentDetails = await _repository.GetAllAsync();
                 return View(parentDetails);
             }
         }
@@ -46,7 +49,7 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _context.ParentDetails.InsertOneAsync(parentDetails);
+                await _repository.AddAsync(parentDetails);
                 return RedirectToAction(nameof(Index));
             }
             PopulateDropDowns();
@@ -59,7 +62,7 @@ namespace TutorAppAPI.Controllers
                                   "Best regards,\n" +
                                   "Your TuitionMasters";
 
-            string subject = "Student Registration Team"; 
+            //string subject = "Student Registration Team"; 
 
             Notification notification = new Notification { 
                 UserName = parentDetails.Name,
@@ -71,7 +74,7 @@ namespace TutorAppAPI.Controllers
                 IsRead = true,
                 CreatedDate = DateTime.UtcNow,
             };
-            _context.Notification.InsertOne(notification);
+            await _repositoryNotification.AddAsync(notification);
 
             //await NotificationService.SendEmailAsync(parentDetails.Email, subject, emailMessage);
             return RedirectToAction(nameof(Index));
@@ -83,7 +86,7 @@ namespace TutorAppAPI.Controllers
             {
                 id = HttpContext.Session.GetString("UserID");
             }
-            var parentDetails = await _context.ParentDetails.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var parentDetails = await _repository.GetByIdAsync(Guid.Parse(id));
             if (parentDetails == null)
             {
                 return NotFound();
@@ -93,7 +96,7 @@ namespace TutorAppAPI.Controllers
             return PartialView(parentDetails);
         }
        
-        [HttpPost]
+        //
         //public async Task<IActionResult> Edit(ParentDetails parentDetails)
         //{
         //    if (ModelState.IsValid)
@@ -108,7 +111,7 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            await _context.ParentDetails.DeleteOneAsync(t => t._id.ToString() == id);
+            await _repository.DeleteAsync(Guid.Parse(id));
             return RedirectToAction(nameof(Index));
         }
 
@@ -142,13 +145,13 @@ namespace TutorAppAPI.Controllers
                 id = HttpContext.Session.GetString("UserID");
             }
             PopulateDropDowns();
-            var parentDetails = await _context.ParentDetails.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var parentDetails = await _repository.GetByIdAsync(Guid.Parse(id));
             if (parentDetails == null)
             {
                 return NotFound();
             }
 
-            var assignments = await _context.Assignment.Find(_ => _.ParentId == parentDetails._id.ToString()).ToListAsync();
+            var assignments = await _repositoryAssignment.GetByIdAsync(parentDetails.ID);
             var parentDetailsViewModel = _mapper.Map<ParentDetailsViewModel>(parentDetails);
             var assignmentsViewModel = _mapper.Map<IEnumerable<AssignmentReadViewModel>>(assignments);
             parentDetailsViewModel.Assignment = assignmentsViewModel.ToList();
@@ -159,12 +162,12 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(string id, ParentDetails parentDetails)
         {
-            if (id != parentDetails._id.ToString())
+            if (id != parentDetails.ID.ToString())
             {
                 return BadRequest();
             }
             PopulateDropDowns();
-            var parentdetailsFromDatabase = await _context.ParentDetails.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var parentdetailsFromDatabase = await _repository.GetByIdAsync(Guid.Parse(id));
             if (ModelState.IsValid)
             {
                 parentdetailsFromDatabase.Name = parentDetails.Name;
@@ -179,8 +182,8 @@ namespace TutorAppAPI.Controllers
                 parentdetailsFromDatabase.Address = parentDetails.Address;
 
 
-                await _context.ParentDetails.ReplaceOneAsync(t => t._id == parentDetails._id, parentDetails);
-                return RedirectToAction(nameof(Profile), new { id = parentDetails._id.ToString() });
+                await _repository.UpdateAsync(parentDetails);
+                return RedirectToAction(nameof(Profile), new { id = parentDetails.ID.ToString() });
             }
             return View(parentDetails);
         }

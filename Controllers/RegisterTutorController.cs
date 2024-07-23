@@ -133,7 +133,7 @@ namespace TutorAppAPI.Controllers
                     TutorRegisterSaveViewModel.TutorCategorySelected = TutorCategorySelected;
                     
 
-                    _context.Tutors.InsertOne(TutorRegisterSaveViewModel);
+                    await _context.Tutors.InsertOneAsync(TutorRegisterSaveViewModel);
 
                     // Create a message for the email
                     string emailMessage = $"Dear {TutorRegisterSaveViewModel.Name},\n\n" +
@@ -141,7 +141,8 @@ namespace TutorAppAPI.Controllers
                                           "Thank you for using our service.\n\n" +
                                           "Best regards,\n" +
                                           "Your TutorMaster";
-                    string subject = "Tutor Master Registration Team";
+                    
+                    //string subject = "Tutor Master Registration Team";
 
                     Notification notification = new Notification
                     {
@@ -154,13 +155,13 @@ namespace TutorAppAPI.Controllers
                         IsRead = true,
                         NotificationType = NotificationType.admin
                     };
-                    _context.Notification.InsertOne(notification);
+                    await _context.Notification.InsertOneAsync(notification);
 
                     //await NotificationService.SendEmailAsync(TutorRegisterSaveViewModel.Email, subject, emailMessage);
 
                     return RedirectToAction("Index","Home");
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //_logger.LogError(ex, "Error saving tutor to MongoDB");
                     ModelState.AddModelError(string.Empty, "An error occurred while saving the data. Please try again.");
@@ -187,7 +188,7 @@ namespace TutorAppAPI.Controllers
                 tutorRegisterSaveViewModel.Gender = Request.Form["Gender"].ToString();
                 tutorRegisterSaveViewModel.Race = Request.Form["Race"].ToString();
                 _context.Tutors.InsertOne(tutorRegisterSaveViewModel);
-                model._id = tutorRegisterSaveViewModel._id.ToString();
+                model._id = tutorRegisterSaveViewModel.ID.ToString();
 
                 HttpContext.Session.SetString("RegisterTutorID",model._id);
                 return Json(new { success = true, message = $"{model._id}" });
@@ -201,9 +202,9 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var _id = ObjectId.Parse(HttpContext.Session.GetString("RegisterTutorID"));
+                var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-                var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _._id == _id).FirstOrDefault();
+                var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
 
                 var selectedSubjects = Request.Form["selectedSubjects"].ToList();
                 var specialNeedsExperience = Request.Form["specialNeeds"].ToList();
@@ -214,8 +215,8 @@ namespace TutorAppAPI.Controllers
                 tutorRegisterSaveViewModel.TextNeeds = Request.Form["textspecialNeedsExperienceDescription"].ToString();
                 tutorRegisterSaveViewModel.PreferredLocations = preferredLocations;
 
-                await _context.Tutors.ReplaceOneAsync(tl => tl._id == tutorRegisterSaveViewModel._id, tutorRegisterSaveViewModel);
-                model._id = tutorRegisterSaveViewModel._id.ToString();
+                await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
+                model._id = tutorRegisterSaveViewModel.ID.ToString();
                 return Json(new { success = true, message = $"{model._id}" });
 
             }
@@ -262,8 +263,8 @@ namespace TutorAppAPI.Controllers
                 Directory.CreateDirectory(uploadsFolder);
             }
             
-            var _id = ObjectId.Parse(HttpContext.Session.GetString("RegisterTutorID"));
-            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _._id == _id).FirstOrDefault();
+            var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
+            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
 
             if (tutorRegisterSaveViewModel != null)
             {
@@ -278,7 +279,7 @@ namespace TutorAppAPI.Controllers
                 {
                     await profileImage.CopyToAsync(fileStream);
                 }
-                await _context.Tutors.ReplaceOneAsync(tl => tl._id == tutorRegisterSaveViewModel._id, tutorRegisterSaveViewModel);
+                await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
                 
                 return Json(new { success = true, imagePath = "/imageData/temp/" + profileImage.FileName });
             }
@@ -291,9 +292,9 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var _id = ObjectId.Parse(HttpContext.Session.GetString("RegisterTutorID"));
+                var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-                var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _._id == _id).FirstOrDefault();
+                var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
                 tutorRegisterSaveViewModel.EducationLevelSelected = model.EducationLevelSelected;
                 tutorRegisterSaveViewModel.TutorCategorySelected = model.TutorCategorySelected;
                 tutorRegisterSaveViewModel.TutorSchools = Request.Form["TutorSchools"].ToList();
@@ -301,8 +302,8 @@ namespace TutorAppAPI.Controllers
                 tutorRegisterSaveViewModel.TutorTo = Request.Form["SchoolTo"].ToList();
                 tutorRegisterSaveViewModel.GradesAndQualifications = Request.Form["TutorGradesSubjects"].ToList();
 
-                _context.Tutors.ReplaceOneAsync(tl => tl._id == tutorRegisterSaveViewModel._id, tutorRegisterSaveViewModel);
-                model._id = tutorRegisterSaveViewModel._id.ToString();
+                _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
+                model._id = tutorRegisterSaveViewModel.ID.ToString();
                 return Json(new { success = true, message = $"{model._id}" });
 
             }
@@ -317,9 +318,9 @@ namespace TutorAppAPI.Controllers
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
-            var _id = ObjectId.Parse(HttpContext.Session.GetString("RegisterTutorID"));
+            var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _._id == _id).FirstOrDefault();
+            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
 
             if (tutorRegisterSaveViewModel == null)
             {
@@ -344,7 +345,7 @@ namespace TutorAppAPI.Controllers
                     }
                     imagePaths.Add("/uploads/temp/" + _id + certFile.FileName);
                 }
-                await _context.Tutors.ReplaceOneAsync(tl => tl._id == tutorRegisterSaveViewModel._id, tutorRegisterSaveViewModel);
+                await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
                 return Json(new { success = true, imagePaths });
             }
 
@@ -354,15 +355,15 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterTutor()
         {
-            var _id = ObjectId.Parse(HttpContext.Session.GetString("RegisterTutorID"));
+            var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _._id == _id).FirstOrDefault();
+            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
 
             if (tutorRegisterSaveViewModel == null)
             {
 
             }
-            await _context.Tutors.ReplaceOneAsync(tl => tl._id == tutorRegisterSaveViewModel._id, tutorRegisterSaveViewModel);
+            await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
 
             return RedirectToAction("Index", "Home");
         }

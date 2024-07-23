@@ -44,18 +44,18 @@ namespace TutorAppAPI.Services
             return await _tutorLevels.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorLevel> GetTutorLevelByIdAsync(ObjectId id)
+        public async Task<TutorLevel> GetTutorLevelByIdAsync(Guid id)
         {
-            return await _tutorLevels.Find(t => t._id == id).FirstOrDefaultAsync();
+            return await _tutorLevels.Find(t => t.ID == id).FirstOrDefaultAsync();
         }
         public async Task<List<AccountInfo>> GetAllAccountInfoAsync()
         {
             return await _accountInfo.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<AccountInfo> GetAccountInfoByIdAsync(ObjectId id)
+        public async Task<AccountInfo> GetAccountInfoByIdAsync(Guid id)
         {
-            return await _accountInfo.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _accountInfo.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
 
         public async Task<List<TutorSubject>> GetAllTutorSubjectAsync()
@@ -63,9 +63,9 @@ namespace TutorAppAPI.Services
             return await _tutorSubject.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorSubject> GetTutorSubjectByIdAsync(ObjectId id)
+        public async Task<TutorSubject> GetTutorSubjectByIdAsync(Guid id)
         {
-            return await _tutorSubject.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _tutorSubject.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
 
         public async Task<List<EducationLevel>> GetAllEducationLevelAsync()
@@ -73,9 +73,9 @@ namespace TutorAppAPI.Services
             return await _educationLevel.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<EducationLevel> GetEducationLevelByIdAsync(ObjectId id)
+        public async Task<EducationLevel> GetEducationLevelByIdAsync(Guid id)
         {
-            return await _educationLevel.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _educationLevel.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
 
         public async Task<List<TutorCategory>> GetAllTutorCategoryAsync()
@@ -83,9 +83,9 @@ namespace TutorAppAPI.Services
             return await _tutorCategory.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorCategory> GetTutorCategoryByIdAsync(ObjectId id)
+        public async Task<TutorCategory> GetTutorCategoryByIdAsync(Guid id)
         {
-            return await _tutorCategory.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _tutorCategory.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
 
         public async Task<List<TutorSchools>> GetAllTutorSchoolAsync()
@@ -93,48 +93,58 @@ namespace TutorAppAPI.Services
             return await _tutorSchool.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorSchools> GetTutorSchoolByIdAsync(ObjectId id)
+        public async Task<TutorSchools> GetTutorSchoolByIdAsync(Guid id)
         {
-            return await _tutorSchool.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _tutorSchool.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
         public async Task<List<TutorGrade>> GetAllTutorGradesAsync()
         {
             return await _tutorGrade.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorGrade> GetTutorGradeByIdAsync(ObjectId id)
+        public async Task<TutorGrade> GetTutorGradeByIdAsync(Guid id)
         {
-            return await _tutorGrade.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _tutorGrade.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
         public async Task<List<TutorLocations>> GetAllTutorLocationsAsync()
         {
             return await _tutorLocations.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorLocations> GetTutorLocationsByIdAsync(ObjectId id)
+        public async Task<TutorLocations> GetTutorLocationsByIdAsync(string id)
         {
-            return await _tutorLocations.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _tutorLocations.Find(a => a.ID.ToString() == id).FirstOrDefaultAsync();
         }
         public async Task<List<TutorGradesSubject>> GetAllTutorGradesSubjectAsync()
         {
             return await _tutorGradesSubject.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorGradesSubject> GetTutorGradesSubjectByIdAsync(ObjectId id)
+        public async Task<TutorGradesSubject> GetTutorGradesSubjectByIdAsync(Guid id)
         {
-            return await _tutorGradesSubject.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _tutorGradesSubject.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
         public async Task<List<TutorGradeValues>> GetAllTutorGradeValuesAsync()
         {
             return await _tutorGradeValues.Find(new BsonDocument()).ToListAsync();
         }
 
-        public async Task<TutorGradeValues> GetTutorGradeValuesByIdAsync(ObjectId id)
+        public async Task<TutorGradeValues> GetTutorGradeValuesByIdAsync(Guid id)
         {
-            return await _tutorGradeValues.Find(a => a._id == id).FirstOrDefaultAsync();
+            return await _tutorGradeValues.Find(a => a.ID == id).FirstOrDefaultAsync();
         }
 
-        
+
+        public Task<TutorLocations> GetTutorLocationsByIdAsync(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TutorSchools> GetTutorSchoolByIdAsync(ObjectId id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Tutors Create(Tutors tutor)
         {
             throw new NotImplementedException();

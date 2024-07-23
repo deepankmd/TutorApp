@@ -56,7 +56,7 @@ namespace TutorAppAPI.Controllers
             {
                 id = HttpContext.Session.GetString("UserID");
             }
-            var tutors = await _context.Tutors.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var tutors = await _context.Tutors.Find(t => t.ID.ToString() == id).FirstOrDefaultAsync();
             if (tutors == null)
             {
                 return NotFound();
@@ -81,7 +81,7 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            await _context.Tutors.DeleteOneAsync(t => t._id.ToString() == id);
+            await _context.Tutors.DeleteOneAsync(t => t.ID.ToString() == id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -107,7 +107,7 @@ namespace TutorAppAPI.Controllers
                 id = HttpContext.Session.GetString("UserID");
             }
             PopulateDropDowns();
-            var tutors = await _context.Tutors.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var tutors = await _context.Tutors.Find(t => t.ID.ToString() == id).FirstOrDefaultAsync();
             if (tutors == null)
             {
                 return NotFound();
@@ -118,12 +118,12 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(string id, Tutors tutors)
         {
-            if (id != tutors._id.ToString())
+            if (id != tutors.ID.ToString())
             {
                 return BadRequest();
             }
             PopulateDropDowns();
-            var tutorFromDatabase = await _context.Tutors.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var tutorFromDatabase = await _context.Tutors.Find(t => t.ID.ToString() == id).FirstOrDefaultAsync();
             if (ModelState.IsValid)
             {
                 tutorFromDatabase.Name = tutors.Name;
@@ -134,10 +134,10 @@ namespace TutorAppAPI.Controllers
                 tutorFromDatabase.Gender = tutors.Gender;
                 tutorFromDatabase.Race = tutors.Race;
 
-                await _context.Tutors.ReplaceOneAsync(t => t._id == tutors._id, tutorFromDatabase);
+                await _context.Tutors.ReplaceOneAsync(t => t.ID == tutors.ID, tutorFromDatabase);
 
 
-                return RedirectToAction(nameof(Profile), new { id = tutors._id.ToString() });
+                return RedirectToAction(nameof(Profile), new { id = tutors.ID.ToString() });
             }
             return View(tutors);
         }

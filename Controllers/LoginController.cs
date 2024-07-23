@@ -7,16 +7,18 @@ using TutorAppAPI.ViewModel;
 using MongoDB.Driver;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
+using TutorAppAPI.Repository.IRepository;
 
 namespace TutorAppAPI.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly MongoContext _context;
-
-        public LoginController(MongoContext context)
+        private readonly IRepository<ParentDetails> _repository;
+        private readonly IRepository<Tutors> _repositoryTutors;
+        public LoginController(IRepository<ParentDetails> repository, IRepository<Tutors> repositoryTutors)
         {
-            _context = context;
+            _repository = repository;
+            _repositoryTutors = repositoryTutors;
         }
 
         public IActionResult Index()
@@ -27,8 +29,9 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> UserLogin(LoginViewModel loginViewModel)
         {
-            var userRecord = _context.ParentDetails
-                .Find(a => (a.Email == loginViewModel.Email || a.Mobile.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
+            var allusers = await _repository.GetAllAsync();
+
+            var userRecord = allusers.Where(a => (a.Email == loginViewModel.Email || a.Mobile.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
 
             if (userRecord?.FirstOrDefault() != null)
             {
@@ -38,7 +41,7 @@ namespace TutorAppAPI.Controllers
             };
                 var user = userRecord.FirstOrDefault();
                 HttpContext.Session.SetString(UserConstants.UserRole, UserConstants.ParentDetails);
-                HttpContext.Session.SetString(UserConstants.UserID, user._id.ToString());
+                HttpContext.Session.SetString(UserConstants.UserID, user.ID.ToString());
                 HttpContext.Session.SetString(UserConstants.UserName, user.Name.ToString());
                 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -57,19 +60,20 @@ namespace TutorAppAPI.Controllers
 
             else if (userRecord.FirstOrDefault() == null)
             {
-                var tutor = _context.Tutors
-                    .Find(a => (a.Email == loginViewModel.Email || a.MobileNumber.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
+                var alltutor = await _repositoryTutors.GetAllAsync();
+
+                var tutor = alltutor.Where(a => (a.Email == loginViewModel.Email || a.MobileNumber.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
 
                 if (tutor.FirstOrDefault() != null)
                 {
                     var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Role, UserConstants.TutorRole)
-            };
+                    {
+                        new Claim(ClaimTypes.Role, UserConstants.TutorRole)
+                    };
 
                     var user = tutor.FirstOrDefault();
                     HttpContext.Session.SetString(UserConstants.UserRole, UserConstants.TutorRole);
-                    HttpContext.Session.SetString(UserConstants.UserID, user._id.ToString());
+                    HttpContext.Session.SetString(UserConstants.UserID, user.ID.ToString());
                     HttpContext.Session.SetString(UserConstants.UserName, user.Name.ToString());
 
                     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);

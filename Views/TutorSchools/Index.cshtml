@@ -22,8 +22,8 @@
             <tr>
                 <td>@item.Name</td>
                 <td>
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModal" data-id="@item._id">Edit</button>
-                    <form asp-action="Delete" asp-route-id="@item._id" method="post" style="display:inline;">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#editModal" data-id="@item.ID">Edit</button>
+                    <form asp-action="Delete" asp-route-id="@item.ID" method="post" style="display:inline;">
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </td>

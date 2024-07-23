@@ -24,7 +24,7 @@ namespace TutorAppAPI.Controllers
             var assignments = await _context.Assignment.Find(_ => true).ToListAsync();
             var parent = await _context.ParentDetails.Find(_ => true).ToListAsync();
             var assignmentViewModel = _mapper.Map<IEnumerable<AssignmentReadViewModel>>(assignments);
-            assignmentViewModel.Select(_ => _.Address = parent.FirstOrDefault(p => p._id == _.ParentId).Address);
+            assignmentViewModel.Select(_ => _.Address = parent.FirstOrDefault(p => p.ID == _.ParentId).Address);
             return View(assignmentViewModel);
         }
 
@@ -47,7 +47,7 @@ namespace TutorAppAPI.Controllers
             assignment.ParentId = HttpContext.Session.GetString(UserConstants.UserID);
             assignment.AssignmentStatus = AssignmentStatus.Pending;
 
-            var parent = (await _context.ParentDetails.FindAsync(_ => _._id.ToString() == assignment.ParentId)).FirstOrDefault();
+            var parent = (await _context.ParentDetails.FindAsync(_ => _.ID.ToString() == assignment.ParentId)).FirstOrDefault();
 
             string emailMessage = $"Dear {parent.Name},\n\n" +
                                $"We have successfully created a Assignment for your {parent.RelationShip}, {parent.StudentName}.\n\n" +
@@ -69,7 +69,7 @@ namespace TutorAppAPI.Controllers
                     Mobile = parent.Mobile.ToString(),
                     NotificationType = NotificationType.admin,
                     IsRead = false,
-                    TypeID = assignment._id.ToString(),
+                    TypeID = assignment.ID.ToString(),
                     CreatedDate = DateTime.UtcNow,
                     ScreenType = ScreenType.Assignment
                 };
@@ -81,7 +81,7 @@ namespace TutorAppAPI.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            var assignment = await _context.Assignment.Find(t => t._id.ToString() == id).FirstOrDefaultAsync();
+            var assignment = await _context.Assignment.Find(t => t.ID.ToString() == id).FirstOrDefaultAsync();
             if (assignment == null)
             {
                 return NotFound();
@@ -92,14 +92,14 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(string id, Assignment assignment)
         {
-            if (id != assignment._id.ToString())
+            if (id != assignment.ID.ToString())
             {
                 return BadRequest();
             }
 
             if (ModelState.IsValid)
             {
-                await _context.Assignment.ReplaceOneAsync(t => t._id == assignment._id, assignment);
+                await _context.Assignment.ReplaceOneAsync(t => t.ID == assignment.ID, assignment);
                 return RedirectToAction(nameof(Index));
             }
             return View(assignment);
@@ -107,10 +107,10 @@ namespace TutorAppAPI.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
-            var assignments = await _context.Assignment.Find(_ => _._id.ToString()== id).ToListAsync();
+            var assignments = await _context.Assignment.Find(_ => _.ID.ToString()== id).ToListAsync();
             var parent = await _context.ParentDetails.Find(_ => true).ToListAsync();
             var assignmentViewModel = _mapper.Map<IEnumerable<AssignmentReadViewModel>>(assignments);
-            assignmentViewModel.Select(_ => _.Address = parent.FirstOrDefault(p => p._id == _.ParentId).Address);
+            assignmentViewModel.Select(_ => _.Address = parent.FirstOrDefault(p => p.ID == _.ParentId).Address);
             return View(assignmentViewModel);
         }
 
@@ -124,10 +124,10 @@ namespace TutorAppAPI.Controllers
 
         public async Task<ActionResult> Approve(AssignmentAppliedViewModel assignmentApplied)
         {
-            var assignment = (await _context.Assignment.FindAsync(_ => _._id.ToString() == assignmentApplied.AssignmentID)).FirstOrDefault();
+            var assignment = (await _context.Assignment.FindAsync(_ => _.ID.ToString() == assignmentApplied.AssignmentID)).FirstOrDefault();
 
             assignment.AssignmentStatus = AssignmentStatus.Closed;
-            await _context.Assignment.ReplaceOneAsync(t => t._id == assignment._id, assignment);
+            await _context.Assignment.ReplaceOneAsync(t => t.ID == assignment.ID, assignment);
 
             return View(assignmentApplied);
         }

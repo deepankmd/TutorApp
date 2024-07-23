@@ -1,13 +1,8 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-
-namespace TutorAppAPI.Models
+﻿namespace TutorAppAPI.Models
 {
     public class Tutors
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId _id { get; set; }
+        public Guid ID { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public long MobileNumber { get; set; }
@@ -37,7 +32,6 @@ namespace TutorAppAPI.Models
         public List<string> CertFileName { get; set; }
         public List<string> CertFileType { get; set; }
         public List<string> CertFileID { get; set; }
-
         public bool IsVerified { get; set; } = false;
 
     }

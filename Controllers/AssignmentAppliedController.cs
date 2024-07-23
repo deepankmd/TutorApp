@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
+using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
 using TutorAppAPI.ViewModel;
 
@@ -10,18 +11,20 @@ namespace TutorAppAPI.Controllers
 {
     public class AssignmentAppliedController : Controller
     {
-        private readonly MongoContext _context;
         private readonly IMapper _mapper;
+        private readonly IRepository<AssignmentApplied> _repository;
+        private readonly IRepository<Notification> _repositoryNotification;
+        private readonly IRepository<Assignment> _repositoryAssignment;
 
-        public AssignmentAppliedController(MongoContext context, IMapper mapper)
+        public AssignmentAppliedController(IMapper mapper, IRepository<AssignmentApplied> repository)
         {
-            _context = context;
             _mapper = mapper;
+            _repository = repository;
         }
 
         public async Task<IActionResult> Index()
         {
-            var assignmentsApplied = await _context.AssignmentApplied.Find(_ => true).ToListAsync();
+            var assignmentsApplied = await _repository.GetAllAsync();
             return View(assignmentsApplied);
         }
 
@@ -41,15 +44,13 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                var appliedAssignment = await _context.Assignment
-                    .Find(t => t._id.ToString() == assignment.AssignmentID)
-                    .FirstOrDefaultAsync();
+                var appliedAssignment = await _repositoryAssignment.GetByIdAsync(Guid.Parse(assignment.AssignmentID));
                 appliedAssignment.AssignmentStatus = AssignmentStatus.Applied;
                 appliedAssignment.AppliedCount = appliedAssignment.AppliedCount +1;
-                await _context.Assignment.ReplaceOneAsync(t => t._id == appliedAssignment._id, appliedAssignment);
+                await _repositoryAssignment.UpdateAsync(appliedAssignment);
                 
                 var assignmentApplied = _mapper.Map<AssignmentApplied>(assignment);
-                await _context.AssignmentApplied.InsertOneAsync(assignmentApplied);
+                await _repository.AddAsync(assignmentApplied);
 
                 string emailMessage = $"Dear {assignment.TutorName},\n\n" +
                                "We have successfully created a applied assignment for you\n\n" +
@@ -68,11 +69,11 @@ namespace TutorAppAPI.Controllers
                     //Mobile = assignment.Mobile.ToString(),
                     NotificationType = NotificationType.Parent,
                     IsRead = false,
-                    TypeID = appliedAssignment._id.ToString(),
+                    TypeID = appliedAssignment.ID.ToString(),
                     CreatedDate = DateTime.UtcNow,
                     ScreenType = ScreenType.AppliedAssignment
                 };
-                _context.Notification.InsertOne(notification);
+                await _repositoryNotification.AddAsync(notification);
 
                 return RedirectToAction("Index", "Assignment");
             }

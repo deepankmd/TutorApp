@@ -14,9 +14,9 @@
                 @foreach (var tutorLevel in Model.TutorLevel)
                 {
                     <optgroup label="@tutorLevel.LevelName">
-                        @foreach (var tutorSubjects in Model.TutorSubject.Where(_ => _.TutorLevelID == tutorLevel._id.ToString()))
+                        @foreach (var tutorSubjects in Model.TutorSubject.Where(_ => _.TutorLevelID == tutorLevel.ID.ToString()))
                         {
-                            <option id="id@(tutorSubjects._id)" value="@tutorLevel.LevelName @tutorSubjects.Name">@tutorSubjects.Name </option>
+                            <option id="id@(tutorSubjects.ID)" value="@tutorLevel.LevelName @tutorSubjects.Name">@tutorSubjects.Name </option>
                         }
                     </optgroup>
                 }

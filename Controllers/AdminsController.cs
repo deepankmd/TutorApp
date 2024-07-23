@@ -3,13 +3,11 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
-using TutorAppAPI.Services;
+using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.ViewModel;
 
 
@@ -17,26 +15,28 @@ namespace TutorAppAPI.Controllers
 {
     public class AdminsController : Controller
     {
-        private readonly MongoContext _context;
         private readonly IMapper _mapper;
-        private readonly AdminService _adminService;
-        public AdminsController(AdminService adminService, MongoContext context, IMapper mapper)
+        private readonly IRepository<Admins> _repository;
+        private readonly IRepository<Notification> _repositoryNotification;
+
+
+        public AdminsController(IMapper mapper, IRepository<Notification> repositoryNotification, IRepository<Admins> repository)
         {
-            _adminService = adminService;
-            _context = context;
             _mapper = mapper;
+            _repositoryNotification = repositoryNotification;
+            _repository = repository;
         }
         [Authorize]
         public IActionResult Index()
         {
-            var admins = _adminService.Get();
+            var admins = _repository.GetAllAsync();
             return View(admins);
         }
 
         [Authorize]
-        public IActionResult Details(ObjectId id)
+        public IActionResult Details(Guid id)
         {
-            var admin = _adminService.Get(id);
+            var admin = _repository.GetByIdAsync(id);
             if (admin == null)
             {
                 return NotFound();
@@ -57,16 +57,16 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                _adminService.Create(admin);
+                _repository.AddAsync(admin);
                 return RedirectToAction(nameof(Index));
             }
             return View(admin);
         }
 
         [Authorize]
-        public IActionResult Edit(ObjectId id)
+        public IActionResult Edit(Guid id)
         {
-            var admin = _adminService.Get(id);
+            var admin = _repository.GetByIdAsync(id);
             if (admin == null)
             {
                 return NotFound();
@@ -76,25 +76,25 @@ namespace TutorAppAPI.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(ObjectId id, Admins admin)
+        public IActionResult Edit(Guid id, Admins admin)
         {
-            if (id != admin._id)
-            {
-                return NotFound();
-            }
+            //if (id != admin._id)
+            //{
+            //    return NotFound();
+            //}
 
             if (ModelState.IsValid)
             {
-                _adminService.Update(id, admin);
+                _repository.UpdateAsync(admin);
                 return RedirectToAction(nameof(Index));
             }
             return View(admin);
         }
 
         [Authorize]
-        public IActionResult Delete(ObjectId id)
+        public IActionResult Delete(Guid id)
         {
-            var admin = _adminService.Get(id);
+            var admin = _repository.DeleteAsync(id);
             if (admin == null)
             {
                 return NotFound();
@@ -104,9 +104,9 @@ namespace TutorAppAPI.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(ObjectId id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            _adminService.Remove(id);
+            _repository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
@@ -119,9 +119,9 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Admins admin)
         {
-            var adminRecord = await _context.Admins
-                .FindAsync(a => a.Email == admin.Email && a.Password == admin.Password);
-                
+            var alladminRecord = await _repository.GetAllAsync();
+            var adminRecord = alladminRecord.Where(a => a.Email == admin.Email && a.Password == admin.Password);
+
 
             if (adminRecord.FirstOrDefault() != null)
             {
@@ -142,7 +142,9 @@ namespace TutorAppAPI.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                var notification = await _context.Notification.Find(_ => _.NotificationType == NotificationType.admin && !_.IsRead).ToListAsync();
+                var allnotification = await _repositoryNotification.GetAllAsync();
+
+                var notification = allnotification.Where(_ => _.NotificationType == NotificationType.admin && !_.IsRead);
                 var notificationViewModel = _mapper.Map<List<NotificationViewModel>>(notification);
                 HttpContext.Session.SetString("Notification", JsonConvert.SerializeObject(notificationViewModel));
 
@@ -168,20 +170,21 @@ namespace TutorAppAPI.Controllers
             var isAdmin = user.IsInRole(UserConstants.AdminRole);
             var isTutor = user.IsInRole(UserConstants.TutorRole);
             var isParent = user.IsInRole(UserConstants.ParentDetails);
+            var allnotification = await _repositoryNotification.GetAllAsync();
 
             if (isAdmin)
             {
-                var notification = await _context.Notification.Find(_ => _.NotificationType == NotificationType.admin).ToListAsync();
+                var notification = allnotification.Where(_ => _.NotificationType == NotificationType.admin);
                 return View(notification);
             }
             else if (isTutor)
             {
-                var notification = await _context.Notification.Find(_ => _.NotificationType == NotificationType.Tutor).ToListAsync();
+                var notification = allnotification.Where(_ => _.NotificationType == NotificationType.Tutor);
                 return PartialView(notification);
             }
             else if (isParent)
             {
-                var notification = await _context.Notification.Find(_ => _.NotificationType == NotificationType.Parent).ToListAsync();
+                var notification = allnotification.Where(_ => _.NotificationType == NotificationType.Parent);
                 return PartialView(notification);
             }
             return PartialView();

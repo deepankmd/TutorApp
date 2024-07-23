@@ -18,8 +18,8 @@ namespace TutorAppAPI.ViewModel
         public string AvailableTimings { get; set; }
         public string PreferredTutorGender { get; set; }
         public string DescriptionOfNeeds { get; set; }
-        public ObjectId ParentId { get; set; }
-        public ObjectId TutorId { get; set; }
+        public Guid ParentId { get; set; }
+        public Guid TutorId { get; set; }
         public string Address { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

@@ -20,8 +20,8 @@ namespace TutorAppAPI.Services
         public List<EducationLevel> Get() =>
             _adminsCollection.Find(admin => true).ToList();
 
-        public EducationLevel Get(ObjectId id) =>
-            _adminsCollection.Find(admin => admin._id == id)
+        public EducationLevel Get(Guid id) =>
+            _adminsCollection.Find(admin => admin.ID == id)
             .FirstOrDefault();
 
         public EducationLevel Create(EducationLevel admin)
@@ -30,13 +30,13 @@ namespace TutorAppAPI.Services
             return admin;
         }
 
-        public void Update(ObjectId id, EducationLevel adminIn) =>
-            _adminsCollection.ReplaceOne(admin => admin._id == id, adminIn);
+        public void Update(Guid id, EducationLevel adminIn) =>
+            _adminsCollection.ReplaceOne(admin => admin.ID == id, adminIn);
 
         public void Remove(EducationLevel adminIn) =>
-            _adminsCollection.DeleteOne(admin => admin._id == adminIn._id);
+            _adminsCollection.DeleteOne(admin => admin.ID == adminIn.ID);
 
         public void Remove(string id) =>
-            _adminsCollection.DeleteOne(admin => admin._id.ToString() == id);
+            _adminsCollection.DeleteOne(admin => admin.ID.ToString() == id);
     }
 }

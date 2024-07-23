@@ -1,23 +1,24 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
 using TutorAppAPI.Models;
+using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
 
 public class TutorLevelController : Controller
 {
     private readonly MongoContext _dbContext;
+    private readonly IRepository<TutorLevel> _tutorLevelRepository;
 
-    public TutorLevelController(MongoContext dbContext)
+    public TutorLevelController(MongoContext dbContext, IRepository<TutorLevel> tutorLevelRepository)
     {
         _dbContext = dbContext;
+        _tutorLevelRepository = tutorLevelRepository;
     }
 
     // GET: TutorLevel/Index
     public async Task<IActionResult> Index()
     {
-        var tutorLevels = await _dbContext.TutorLevel.Find(new BsonDocument()).ToListAsync();
-        return View(tutorLevels);
+        var levels = await _tutorLevelRepository.GetAllAsync();
+        return View(levels);
     }
 
     // GET: TutorLevel/Create
@@ -32,7 +33,8 @@ public class TutorLevelController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _dbContext.TutorLevel.InsertOneAsync(tutorLevel);
+            tutorLevel.ID = Guid.NewGuid();
+            await _tutorLevelRepository.AddAsync(tutorLevel);
             return RedirectToAction(nameof(Index));
         }
         return PartialView("Create", tutorLevel);
@@ -41,33 +43,19 @@ public class TutorLevelController : Controller
     // GET: TutorLevel/Edit/5
     public async Task<IActionResult> Edit(string id)
     {
-        if (id == null)
-        {
-            return NotFound();
-        }
+        var level = await _tutorLevelRepository.GetByIdAsync(Guid.Parse(id));
+        if (level == null) return NotFound();
 
-        var objectId = new ObjectId(id);
-        var tutorLevel = await _dbContext.TutorLevel.Find(tl => tl._id == objectId).FirstOrDefaultAsync();
-        if (tutorLevel == null)
-        {
-            return NotFound();
-        }
-        return PartialView("Edit", tutorLevel);
+        return PartialView("Edit", level);
     }
 
     // POST: TutorLevel/Edit/5
     [HttpPost]
-    public async Task<IActionResult> Edit(string id, TutorLevel tutorLevel)
+    public async Task<IActionResult> Edit(TutorLevel tutorLevel)
     {
-        if (id != tutorLevel._id.ToString())
-        {
-            return NotFound();
-        }
-
         if (ModelState.IsValid)
         {
-            var objectId = new ObjectId(id);
-            await _dbContext.TutorLevel.ReplaceOneAsync(tl => tl._id == objectId, tutorLevel);
+            await _tutorLevelRepository.UpdateAsync(tutorLevel);
             return RedirectToAction(nameof(Index));
         }
         return PartialView("Edit", tutorLevel);
@@ -77,8 +65,8 @@ public class TutorLevelController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
-        var objectId = new ObjectId(id);
-        await _dbContext.TutorLevel.DeleteOneAsync(tl => tl._id == objectId);
-        return RedirectToAction(nameof(Index));
+        var level = await _tutorLevelRepository.GetByIdAsync(Guid.Parse(id));
+        if (level == null) return NotFound();
+        return View(level);
     }
 }

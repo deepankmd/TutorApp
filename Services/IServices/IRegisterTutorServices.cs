@@ -6,25 +6,25 @@ namespace TutorAppAPI.Services.IServices
     public interface IRegisterTutorServices
     {
         Task<List<TutorLevel>> GetAllTutorLevelsAsync();
-        Task<TutorLevel> GetTutorLevelByIdAsync(ObjectId id);
+        Task<TutorLevel> GetTutorLevelByIdAsync(Guid id);
         Task<List<AccountInfo>> GetAllAccountInfoAsync();
-        Task<AccountInfo> GetAccountInfoByIdAsync(ObjectId id);
+        Task<AccountInfo> GetAccountInfoByIdAsync(Guid id);
         Task<List<TutorSubject>> GetAllTutorSubjectAsync();
-        Task<TutorSubject> GetTutorSubjectByIdAsync(ObjectId id);
+        Task<TutorSubject> GetTutorSubjectByIdAsync(Guid id);
         Task<List<EducationLevel>> GetAllEducationLevelAsync();
-        Task<EducationLevel> GetEducationLevelByIdAsync(ObjectId id);
+        Task<EducationLevel> GetEducationLevelByIdAsync(Guid id);
         Task<List<TutorCategory>> GetAllTutorCategoryAsync();
-        Task<TutorCategory> GetTutorCategoryByIdAsync(ObjectId id);
+        Task<TutorCategory> GetTutorCategoryByIdAsync(Guid id);
         Task<List<TutorSchools>> GetAllTutorSchoolAsync();
         Task<TutorSchools> GetTutorSchoolByIdAsync(ObjectId id);
         Task<List<TutorGrade>> GetAllTutorGradesAsync();
-        Task<TutorGrade> GetTutorGradeByIdAsync(ObjectId id);
+        Task<TutorGrade> GetTutorGradeByIdAsync(Guid id);
         Task<List<TutorLocations>> GetAllTutorLocationsAsync();
-        Task<TutorLocations> GetTutorLocationsByIdAsync(ObjectId id);
+        Task<TutorLocations> GetTutorLocationsByIdAsync(Guid id);
         Task<List<TutorGradesSubject>> GetAllTutorGradesSubjectAsync();
-        Task<TutorGradesSubject> GetTutorGradesSubjectByIdAsync(ObjectId id);
+        Task<TutorGradesSubject> GetTutorGradesSubjectByIdAsync(Guid id);
         Task<List<TutorGradeValues>> GetAllTutorGradeValuesAsync();
-        Task<TutorGradeValues> GetTutorGradeValuesByIdAsync(ObjectId id);
+        Task<TutorGradeValues> GetTutorGradeValuesByIdAsync(Guid id);
         Tutors Create(Tutors tutor);
     }
 }

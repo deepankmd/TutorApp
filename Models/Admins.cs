@@ -5,9 +5,7 @@ namespace TutorAppAPI.Models
 {
     public class Admins
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId _id { get; set; }
+        public Guid ID { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public long PhoneNumber { get; set; }
