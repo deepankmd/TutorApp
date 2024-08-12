@@ -34,7 +34,7 @@
                                 <div class="card-body">
 
                                     <div class="form-group">
-                                        @foreach (var subject in Model.TutoringPreferences.TutorSubject.Where(_ => _.TutorLevelID == tutorLevel.ID.ToString()))
+                                        @foreach (var subject in Model.TutoringPreferences.TutorSubject.Where(_ => _.TutorLevelID == tutorLevel.ID))
                                         {
                                             <div class="form-check form-check-inline">
                                                 <input for="selectedSubjects" class="form-check-input" type="checkbox" name="selectedSubjects" value="@subject.ID.ToString()" id="subject@(subject.ID)" required>

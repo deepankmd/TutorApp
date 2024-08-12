@@ -1,7 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-
-namespace TutorAppAPI.Models
+﻿namespace TutorAppAPI.Models
 {
     public class Admins
     {

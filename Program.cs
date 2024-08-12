@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http.Features;
-using System.Configuration;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using TutorAppAPI;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
 using TutorAppAPI.Repository;
@@ -24,31 +25,36 @@ builder.Services.Configure<FormOptions>(options =>
 });
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddTransient<ITutorLocationRepository>(sp => new TutorLocationRepository(connectionString));
-builder.Services.AddTransient<IRepository<TutorLevel>>(sp => new Repository<TutorLevel>(connectionString, "TutorLevel"));
-builder.Services.AddTransient<IRepository<TutorLocations>>(sp => new Repository<TutorLocations>(connectionString, "TutorLocations"));
-builder.Services.AddTransient<IRepository<TutorGradeValues>>(sp => new Repository<TutorGradeValues>(connectionString, "TutorGradeValues"));
-builder.Services.AddTransient<IRepository<TutorGrade>>(sp => new Repository<TutorGrade>(connectionString, "TutorGrade"));
+builder.Services.AddDbContext<MySqlContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
 
-builder.Services.AddTransient<IRepository<TutorGradesSubject>>(sp => new Repository<TutorGradesSubject>(connectionString, "TutorGradesSubject"));
-builder.Services.AddTransient<IRepository<TutorCategory>>(sp => new Repository<TutorCategory>(connectionString, "TutorCategory"));
-builder.Services.AddTransient<IRepository<Assignment>>(sp => new Repository<Assignment>(connectionString, "Assignment"));
-builder.Services.AddTransient<IRepository<Notification>>(sp => new Repository<Notification>(connectionString, "Notification"));
-builder.Services.AddTransient<IRepository<Tutors>>(sp => new Repository<Tutors>(connectionString, "Tutors"));
-builder.Services.AddTransient<IRepository<ParentDetails>>(sp => new Repository<ParentDetails>(connectionString, "ParentDetails"));
-builder.Services.AddTransient<IRepository<EducationLevel>>(sp => new Repository<EducationLevel>(connectionString, "EducationLevel"));
-builder.Services.AddTransient<IRepository<Admins>>(sp => new Repository<Admins>(connectionString, "Admins"));
-builder.Services.AddTransient<IRepository<AccountInfo>>(sp => new Repository<AccountInfo>(connectionString, "AccountInfo"));
-builder.Services.AddTransient<IRepository<AgencyManagers>>(sp => new Repository<AgencyManagers>(connectionString, "AgencyManagers"));
-builder.Services.AddTransient<IRepository<AssignmentApplied>>(sp => new Repository<AssignmentApplied>(connectionString, "AssignmentApplied"));
-builder.Services.AddTransient<IRepository<EducationAndQualifications>>(sp => new Repository<EducationAndQualifications>(connectionString, "EducationAndQualifications"));
+
+//builder.Services.AddTransient<ITutorLocationRepository>(sp => new TutorLocationRepository(connectionString));
+//builder.Services.AddTransient<IRepository<TutorLevel>>(sp => new Repository<TutorLevel>(connectionString, "TutorLevel"));
+//builder.Services.AddTransient<IRepository<TutorLocations>>(sp => new Repository<TutorLocations>(connectionString, "TutorLocations"));
+//builder.Services.AddTransient<IRepository<TutorGradeValues>>(sp => new Repository<TutorGradeValues>(connectionString, "TutorGradeValues"));
+//builder.Services.AddTransient<IRepository<TutorGrade>>(sp => new Repository<TutorGrade>(connectionString, "TutorGrade"));
+
+//builder.Services.AddTransient<IRepository<TutorGradesSubject>>(sp => new Repository<TutorGradesSubject>(connectionString, "TutorGradesSubject"));
+//builder.Services.AddTransient<IRepository<TutorCategory>>(sp => new Repository<TutorCategory>(connectionString, "TutorCategory"));
+//builder.Services.AddTransient<IRepository<Assignment>>(sp => new Repository<Assignment>(connectionString, "Assignment"));
+//builder.Services.AddTransient<IRepository<Notification>>(sp => new Repository<Notification>(connectionString, "Notification"));
+//builder.Services.AddTransient<IRepository<Tutors>>(sp => new Repository<Tutors>(connectionString, "Tutors"));
+//builder.Services.AddTransient<IRepository<ParentDetails>>(sp => new Repository<ParentDetails>(connectionString, "ParentDetails"));
+//builder.Services.AddTransient<IRepository<EducationLevel>>(sp => new Repository<EducationLevel>(connectionString, "EducationLevel"));
+//builder.Services.AddTransient<IRepository<Admins>>(sp => new Repository<Admins>(connectionString, "Admins"));
+//builder.Services.AddTransient<IRepository<AccountInfo>>(sp => new Repository<AccountInfo>(connectionString, "AccountInfo"));
+//builder.Services.AddTransient<IRepository<AgencyManagers>>(sp => new Repository<AgencyManagers>(connectionString, "AgencyManagers"));
+//builder.Services.AddTransient<IRepository<AssignmentApplied>>(sp => new Repository<AssignmentApplied>(connectionString, "AssignmentApplied"));
+//builder.Services.AddTransient<IRepository<EducationAndQualifications>>(sp => new Repository<EducationAndQualifications>(connectionString, "EducationAndQualifications"));
 
 
 
 builder.Services.AddScoped<EducationLevelServices>();
 builder.Services.AddScoped<TutorLevelServices>();
 builder.Services.AddScoped<TutorSubjectServices>();
-
 builder.Services.AddSingleton<IAccountInfoService, AccountInfoService>();
 builder.Services.AddSingleton<IRegisterTutorServices, RegisterTutorServices>();
 
@@ -88,8 +94,16 @@ var app = builder.Build();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseSwagger();
+    app.UseSwaggerUI();
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    SeedData.Initialize(services);
 }
 
 app.UseHttpsRedirection();

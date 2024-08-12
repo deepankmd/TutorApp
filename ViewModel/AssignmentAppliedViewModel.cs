@@ -2,7 +2,7 @@
 {
     public class AssignmentAppliedViewModel
     {
-        public string _id { get; set; }
+        public string ID { get; set; }
         public string YourRate { get; set; }
         public string AllAvailableTimings { get; set; }
         public string WhenCanYouStartEarliest { get; set; }

@@ -3,11 +3,12 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Claims;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
-using TutorAppAPI.Repository.IRepository;
+using TutorAppAPI.Services;
 using TutorAppAPI.ViewModel;
 
 
@@ -16,27 +17,28 @@ namespace TutorAppAPI.Controllers
     public class AdminsController : Controller
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<Admins> _repository;
-        private readonly IRepository<Notification> _repositoryNotification;
+        //private readonly IRepository<Admins> _repository;
+        //private readonly IRepository<Notification> _repositoryNotification;
+        private readonly MySqlContext _context;
 
-
-        public AdminsController(IMapper mapper, IRepository<Notification> repositoryNotification, IRepository<Admins> repository)
+        public AdminsController(IMapper mapper, MySqlContext context)
         {
             _mapper = mapper;
-            _repositoryNotification = repositoryNotification;
-            _repository = repository;
+            //_repositoryNotification = repositoryNotification;
+            //_repository = repository;
+            _context = context;
         }
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var admins = _repository.GetAllAsync();
+            var admins = await _context.Admins.ToListAsync();
             return View(admins);
         }
 
         [Authorize]
-        public IActionResult Details(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            var admin = _repository.GetByIdAsync(id);
+            var admin = await _context.Admins.FindAsync(id);
             if (admin == null)
             {
                 return NotFound();
@@ -53,20 +55,21 @@ namespace TutorAppAPI.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Admins admin)
+        public async Task<IActionResult> Create(Admins admin)
         {
             if (ModelState.IsValid)
             {
-                _repository.AddAsync(admin);
+                await _context.Admins.AddAsync(admin);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(admin);
         }
 
         [Authorize]
-        public IActionResult Edit(Guid id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            var admin = _repository.GetByIdAsync(id);
+            var admin = await _context.Admins.FindAsync(id);
             if (admin == null)
             {
                 return NotFound();
@@ -76,7 +79,7 @@ namespace TutorAppAPI.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, Admins admin)
+        public async Task<IActionResult> Edit(Guid id, Admins admin)
         {
             //if (id != admin._id)
             //{
@@ -85,16 +88,19 @@ namespace TutorAppAPI.Controllers
 
             if (ModelState.IsValid)
             {
-                _repository.UpdateAsync(admin);
+                _context.Entry(admin).State = EntityState.Modified;
+                _context.Admins.Update(admin);
                 return RedirectToAction(nameof(Index));
             }
             return View(admin);
         }
 
         [Authorize]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var admin = _repository.DeleteAsync(id);
+            var admins = await _context.Admins.FindAsync(id);
+
+            var admin = _context.Admins.Remove(admins);
             if (admin == null)
             {
                 return NotFound();
@@ -104,9 +110,11 @@ namespace TutorAppAPI.Controllers
         [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            _repository.DeleteAsync(id);
+            var admins = await _context.Admins.FindAsync(id);
+
+            var admin = _context.Admins.Remove(admins);
             return RedirectToAction(nameof(Index));
         }
 
@@ -119,7 +127,7 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Admins admin)
         {
-            var alladminRecord = await _repository.GetAllAsync();
+            var alladminRecord = await _context.Admins.ToListAsync();
             var adminRecord = alladminRecord.Where(a => a.Email == admin.Email && a.Password == admin.Password);
 
 
@@ -142,9 +150,10 @@ namespace TutorAppAPI.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
 
-                var allnotification = await _repositoryNotification.GetAllAsync();
+                var notification = await _context.Notification
+                    .Where(_ => _.NotificationType == NotificationType.admin && !_.IsRead)
+                    .ToListAsync();
 
-                var notification = allnotification.Where(_ => _.NotificationType == NotificationType.admin && !_.IsRead);
                 var notificationViewModel = _mapper.Map<List<NotificationViewModel>>(notification);
                 HttpContext.Session.SetString("Notification", JsonConvert.SerializeObject(notificationViewModel));
 
@@ -170,7 +179,7 @@ namespace TutorAppAPI.Controllers
             var isAdmin = user.IsInRole(UserConstants.AdminRole);
             var isTutor = user.IsInRole(UserConstants.TutorRole);
             var isParent = user.IsInRole(UserConstants.ParentDetails);
-            var allnotification = await _repositoryNotification.GetAllAsync();
+            var allnotification = await _context.Notification.ToListAsync();
 
             if (isAdmin)
             {

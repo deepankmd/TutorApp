@@ -7,18 +7,21 @@ using TutorAppAPI.ViewModel;
 using MongoDB.Driver;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
-using TutorAppAPI.Repository.IRepository;
+using Microsoft.EntityFrameworkCore;
 
 namespace TutorAppAPI.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IRepository<ParentDetails> _repository;
-        private readonly IRepository<Tutors> _repositoryTutors;
-        public LoginController(IRepository<ParentDetails> repository, IRepository<Tutors> repositoryTutors)
+        //private readonly IRepository<ParentDetails> _repository;
+        //private readonly IRepository<Tutors> _repositoryTutors;
+        private readonly MySqlContext _context;
+
+        public LoginController(MySqlContext context)
         {
-            _repository = repository;
-            _repositoryTutors = repositoryTutors;
+            //_repository = repository;
+            //_repositoryTutors = repositoryTutors;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -29,9 +32,10 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> UserLogin(LoginViewModel loginViewModel)
         {
-            var allusers = await _repository.GetAllAsync();
+            var userRecord = await _context.ParentDetails.Where(a =>
+            (a.Email == loginViewModel.Email || a.Mobile.ToString() == loginViewModel.Email) 
+            && a.Password == loginViewModel.Password).ToListAsync();
 
-            var userRecord = allusers.Where(a => (a.Email == loginViewModel.Email || a.Mobile.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
 
             if (userRecord?.FirstOrDefault() != null)
             {
@@ -60,9 +64,12 @@ namespace TutorAppAPI.Controllers
 
             else if (userRecord.FirstOrDefault() == null)
             {
-                var alltutor = await _repositoryTutors.GetAllAsync();
+                var alltutor = await _context.Tutors
+                    .Where(a => (a.Email == loginViewModel.Email || 
+                    a.MobileNumber.ToString() == loginViewModel.Email) &&
+                    a.Password == loginViewModel.Password).ToListAsync();
 
-                var tutor = alltutor.Where(a => (a.Email == loginViewModel.Email || a.MobileNumber.ToString() == loginViewModel.Email) && a.Password == loginViewModel.Password);
+                var tutor = alltutor;
 
                 if (tutor.FirstOrDefault() != null)
                 {
