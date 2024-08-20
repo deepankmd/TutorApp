@@ -1,24 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 using TutorAppAPI.Models;
-using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
 
 namespace TutorAppAPI.Controllers
 {
     public class TutorGradesSubjectController : Controller
     {
-        private readonly MongoContext _context;
-        private readonly IRepository<TutorGradesSubject> _repository;
+        private readonly MySqlContext _context;
+        //private readonly IRepository<TutorGradesSubject> _repository;
 
-        public TutorGradesSubjectController(MongoContext context, IRepository<TutorGradesSubject> repository)
+        public TutorGradesSubjectController(MySqlContext context)
         {
             _context = context;
-            _repository = repository;
         }
         public async Task<IActionResult> Index()
         {
-            var tutorGradesSubject = await _repository.GetAllAsync();
+            var tutorGradesSubject = await _context.TutorGradesSubject.ToListAsync();
             return View(tutorGradesSubject);
         }
         public IActionResult Create() => PartialView();
@@ -28,7 +26,7 @@ namespace TutorAppAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _repository.AddAsync(tutorGrade);
+                await _context.TutorGradesSubject.AddAsync(tutorGrade);
                 return RedirectToAction(nameof(Index));
             }
             return PartialView(tutorGrade);
@@ -36,7 +34,7 @@ namespace TutorAppAPI.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            var tutorGrade = await _repository.GetByIdAsync(Guid.Parse(id));
+            var tutorGrade = await _context.TutorGradesSubject.FindAsync(Guid.Parse(id));
             if (tutorGrade == null)
             {
                 return NotFound();
@@ -45,11 +43,11 @@ namespace TutorAppAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(TutorGradesSubject tutorGrade)
+        public IActionResult Edit(TutorGradesSubject tutorGrade)
         {
             if (ModelState.IsValid)
             {
-                await _repository.UpdateAsync(tutorGrade);
+                _context.TutorGradesSubject.Update(tutorGrade);
                 return RedirectToAction(nameof(Index));
             }
             return PartialView(tutorGrade);
@@ -58,7 +56,10 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            await _repository.DeleteAsync(Guid.Parse(id));
+            var tutorGrade = await _context.TutorGradesSubject.FindAsync(Guid.Parse(id));
+
+            _context.TutorGradesSubject.Remove(tutorGrade);
+            _context.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
     }

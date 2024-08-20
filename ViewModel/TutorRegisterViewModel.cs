@@ -4,7 +4,7 @@ namespace TutorAppAPI.ViewModel
 {
     public class TutorRegisterViewModel
     {
-        public string _id { get; set; }
+        public string ID { get; set; }
         public AccountInfo AccountInfo { get; set; }
         public TutoringPreferences TutoringPreferences { get; set; }
         public EducationAndQualifications EducationAndQualifications { get; set; }

@@ -1,7 +1,7 @@
 ﻿@using TutorAppAPI.ViewModel
 @model NotificationDetailViewModel
 <form asp-action="ApproveNotification" method="post">
-    <input type="hidden" name="id" value="@Model._id" />
+    <input type="hidden" name="id" value="@Model.ID" />
     <h1>Notification Details</h1>
     <p><strong>Email:</strong> @Model.Email</p>
     <p><strong>Mobile:</strong> @Model.Mobile</p>
@@ -26,6 +26,6 @@
         <p><strong>Assignment Description Of Needs:</strong> @Model.Assignment.DescriptionOfNeeds</p>
     }
    
-        <input type="hidden" name="id" value="@Model._id" />
+        <input type="hidden" name="id" value="@Model.ID" />
         <button type="submit">Approve</button>
     </form>

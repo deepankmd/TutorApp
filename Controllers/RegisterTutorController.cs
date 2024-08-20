@@ -1,43 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using TutorAppAPI.Models;
 using TutorAppAPI.Services;
-using TutorAppAPI.Services.IServices;
 using TutorAppAPI.ViewModel;
 
 namespace TutorAppAPI.Controllers
 {
     public class RegisterTutorController : Controller
-	{
-        private readonly IAccountInfoService _accountInfoService;
-        private readonly IRegisterTutorServices _registerTutorServices;
-        private readonly MongoContext _context;
+    {
+        //private readonly IAccountInfoService _accountInfoService;
+        //private readonly IRegisterTutorServices _registerTutorServices;
+        //private readonly MongoContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly MySqlContext _context;
 
-        public RegisterTutorController(IAccountInfoService accountInfoService, IRegisterTutorServices registerTutorServices, MongoContext context, IWebHostEnvironment environment)
+        public RegisterTutorController(IWebHostEnvironment environment, MySqlContext context)
         {
-            _accountInfoService = accountInfoService;
-            _registerTutorServices = registerTutorServices;
-            _context = context;
             _environment = environment;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
-		{
-            var tutorLevels = await _registerTutorServices.GetAllTutorLevelsAsync();
-            var tutorSubject = await _registerTutorServices.GetAllTutorSubjectAsync();
-            var educationLevel = await _registerTutorServices.GetAllEducationLevelAsync();
-            var tutorCategory = await _registerTutorServices.GetAllTutorCategoryAsync();
-            var tutorSchool = await _registerTutorServices.GetAllTutorSchoolAsync();
-            var tutorGrade = await _registerTutorServices.GetAllTutorGradesAsync();
-            var tutorLocations = await _registerTutorServices.GetAllTutorLocationsAsync();
-            var tutorGradesSubject = await _registerTutorServices.GetAllTutorGradesSubjectAsync();
-            var tutorGradeValues = await _registerTutorServices.GetAllTutorGradeValuesAsync();
+        {
+            var tutorLevels = await _context.TutorLevel.ToListAsync();
+            var tutorSubject = await _context.TutorSubject.ToListAsync();
+            var educationLevel = await _context.EducationLevel.ToListAsync();
+            var tutorCategory = await _context.TutorCategory.ToListAsync();
+            var tutorSchool = await _context.TutorSchools.ToListAsync();
+            var tutorGrade = await _context.TutorGrade.ToListAsync();
+            var tutorLocations = await _context.TutorLocations.ToListAsync();
+            var tutorGradesSubject = await _context.TutorGradesSubject.ToListAsync();
+            var tutorGradeValues = await _context.TutorGradeValues.ToListAsync();
 
-            TutorRegisterViewModel tutorRegisterViewModel = new TutorRegisterViewModel { AccountInfo = new AccountInfo(),
-                EducationAndQualifications = new EducationAndQualifications{ TutorGradesSubject = tutorGradesSubject, TutorGradeValues = tutorGradeValues },
+            TutorRegisterViewModel tutorRegisterViewModel = new TutorRegisterViewModel
+            {
+                AccountInfo = new AccountInfo(),
+                EducationAndQualifications = new EducationAndQualifications { TutorGradesSubject = tutorGradesSubject, TutorGradeValues = tutorGradeValues },
                 TutoringPreferences = new TutoringPreferences { TutorLevels = tutorLevels, TutorSubject = tutorSubject, Locations = tutorLocations },
                 EducationLevel = educationLevel,
                 TutorCategory = tutorCategory,
@@ -47,7 +46,7 @@ namespace TutorAppAPI.Controllers
                 TutorGradeValues = tutorGradeValues,
             };
             return View(tutorRegisterViewModel);
-		}
+        }
 
         public async Task<IActionResult> Register()
         {
@@ -56,15 +55,15 @@ namespace TutorAppAPI.Controllers
 
         private async Task<IActionResult> AddTutorEmptyValue()
         {
-            var tutorLevels = await _registerTutorServices.GetAllTutorLevelsAsync();
-            var tutorSubject = await _registerTutorServices.GetAllTutorSubjectAsync();
-            var educationLevel = await _registerTutorServices.GetAllEducationLevelAsync();
-            var tutorCategory = await _registerTutorServices.GetAllTutorCategoryAsync();
-            var tutorSchool = await _registerTutorServices.GetAllTutorSchoolAsync();
-            var tutorGrade = await _registerTutorServices.GetAllTutorGradesAsync();
-            var tutorLocations = await _registerTutorServices.GetAllTutorLocationsAsync();
-            var tutorGradesSubject = await _registerTutorServices.GetAllTutorGradesSubjectAsync();
-            var tutorGradeValues = await _registerTutorServices.GetAllTutorGradeValuesAsync();
+            var tutorLevels = await _context.TutorLevel.ToListAsync();
+            var tutorSubject = await _context.TutorSubject.ToListAsync();
+            var educationLevel = await _context.EducationLevel.ToListAsync();
+            var tutorCategory = await _context.TutorCategory.ToListAsync();
+            var tutorSchool = await _context.TutorSchools.ToListAsync();
+            var tutorGrade = await _context.TutorGrade.ToListAsync();
+            var tutorLocations = await _context.TutorLocations.ToListAsync();
+            var tutorGradesSubject = await _context.TutorGradesSubject.ToListAsync();
+            var tutorGradeValues = await _context.TutorGradeValues.ToListAsync();
 
             TutorRegisterViewModel tutorRegisterViewModel = new TutorRegisterViewModel
             {
@@ -131,9 +130,9 @@ namespace TutorAppAPI.Controllers
                     TutorRegisterSaveViewModel.PreferredLocations = preferredLocations;
                     TutorRegisterSaveViewModel.EducationLevelSelected = educationLevelSelected;
                     TutorRegisterSaveViewModel.TutorCategorySelected = TutorCategorySelected;
-                    
 
-                    await _context.Tutors.InsertOneAsync(TutorRegisterSaveViewModel);
+
+                    await _context.Tutors.AddAsync(TutorRegisterSaveViewModel);
 
                     // Create a message for the email
                     string emailMessage = $"Dear {TutorRegisterSaveViewModel.Name},\n\n" +
@@ -141,7 +140,7 @@ namespace TutorAppAPI.Controllers
                                           "Thank you for using our service.\n\n" +
                                           "Best regards,\n" +
                                           "Your TutorMaster";
-                    
+
                     //string subject = "Tutor Master Registration Team";
 
                     Notification notification = new Notification
@@ -155,11 +154,11 @@ namespace TutorAppAPI.Controllers
                         IsRead = true,
                         NotificationType = NotificationType.admin
                     };
-                    await _context.Notification.InsertOneAsync(notification);
+                    await _context.Notification.AddAsync(notification);
 
                     //await NotificationService.SendEmailAsync(TutorRegisterSaveViewModel.Email, subject, emailMessage);
 
-                    return RedirectToAction("Index","Home");
+                    return RedirectToAction("Index", "Home");
                 }
                 catch (Exception)
                 {
@@ -172,7 +171,7 @@ namespace TutorAppAPI.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateAccountInfo(TutorRegisterViewModel model)
+        public async Task<JsonResult> UpdateAccountInfo(TutorRegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -187,11 +186,11 @@ namespace TutorAppAPI.Controllers
                 tutorRegisterSaveViewModel.DateofBirth = model.AccountInfo.DateofBirth;
                 tutorRegisterSaveViewModel.Gender = Request.Form["Gender"].ToString();
                 tutorRegisterSaveViewModel.Race = Request.Form["Race"].ToString();
-                _context.Tutors.InsertOne(tutorRegisterSaveViewModel);
-                model._id = tutorRegisterSaveViewModel.ID.ToString();
+                await _context.Tutors.AddAsync(tutorRegisterSaveViewModel);
+                model.ID = tutorRegisterSaveViewModel.ID.ToString();
 
-                HttpContext.Session.SetString("RegisterTutorID",model._id);
-                return Json(new { success = true, message = $"{model._id}" });
+                HttpContext.Session.SetString("RegisterTutorID", model.ID);
+                return Json(new { success = true, message = $"{model.ID}" });
 
             }
             return Json(new { success = false, message = "Failed to validate model" });
@@ -204,7 +203,7 @@ namespace TutorAppAPI.Controllers
             {
                 var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-                var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
+                var tutorRegisterSaveViewModel = await _context.Tutors.Where(_ => _.ID == _id).FirstOrDefaultAsync();
 
                 var selectedSubjects = Request.Form["selectedSubjects"].ToList();
                 var specialNeedsExperience = Request.Form["specialNeeds"].ToList();
@@ -215,9 +214,9 @@ namespace TutorAppAPI.Controllers
                 tutorRegisterSaveViewModel.TextNeeds = Request.Form["textspecialNeedsExperienceDescription"].ToString();
                 tutorRegisterSaveViewModel.PreferredLocations = preferredLocations;
 
-                await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
-                model._id = tutorRegisterSaveViewModel.ID.ToString();
-                return Json(new { success = true, message = $"{model._id}" });
+                await _context.Tutors.AddAsync(tutorRegisterSaveViewModel);
+                model.ID = tutorRegisterSaveViewModel.ID.ToString();
+                return Json(new { success = true, message = $"{model.ID}" });
 
             }
             return Json(new { success = false, message = "Failed to validate model" });
@@ -228,7 +227,7 @@ namespace TutorAppAPI.Controllers
         {
             var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "temp");
             Directory.CreateDirectory(uploadsFolder);
-          
+
 
             if (profileImage != null)
             {
@@ -262,9 +261,9 @@ namespace TutorAppAPI.Controllers
             {
                 Directory.CreateDirectory(uploadsFolder);
             }
-            
+
             var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
-            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
+            var tutorRegisterSaveViewModel = await _context.Tutors.Where(_ => _.ID == _id).FirstOrDefaultAsync();
 
             if (tutorRegisterSaveViewModel != null)
             {
@@ -279,8 +278,8 @@ namespace TutorAppAPI.Controllers
                 {
                     await profileImage.CopyToAsync(fileStream);
                 }
-                await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
-                
+                await _context.Tutors.AddAsync(tutorRegisterSaveViewModel);
+
                 return Json(new { success = true, imagePath = "/imageData/temp/" + profileImage.FileName });
             }
 
@@ -288,13 +287,13 @@ namespace TutorAppAPI.Controllers
         }
 
         [HttpPost]
-        public JsonResult UpdateEducation(TutorRegisterViewModel model)
+        public async Task<JsonResult> UpdateEducation(TutorRegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
                 var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-                var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
+                var tutorRegisterSaveViewModel = await _context.Tutors.FirstOrDefaultAsync(_ => _.ID == _id);
                 tutorRegisterSaveViewModel.EducationLevelSelected = model.EducationLevelSelected;
                 tutorRegisterSaveViewModel.TutorCategorySelected = model.TutorCategorySelected;
                 tutorRegisterSaveViewModel.TutorSchools = Request.Form["TutorSchools"].ToList();
@@ -302,9 +301,9 @@ namespace TutorAppAPI.Controllers
                 tutorRegisterSaveViewModel.TutorTo = Request.Form["SchoolTo"].ToList();
                 tutorRegisterSaveViewModel.GradesAndQualifications = Request.Form["TutorGradesSubjects"].ToList();
 
-                _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
-                model._id = tutorRegisterSaveViewModel.ID.ToString();
-                return Json(new { success = true, message = $"{model._id}" });
+                await _context.Tutors.AddAsync(tutorRegisterSaveViewModel);
+                model.ID = tutorRegisterSaveViewModel.ID.ToString();
+                return Json(new { success = true, message = $"{model.ID}" });
 
             }
             return Json(new { success = false, message = "Failed to validate model" });
@@ -320,16 +319,16 @@ namespace TutorAppAPI.Controllers
             }
             var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
+            var tutorRegisterSaveViewModel = _context.Tutors.FirstOrDefault(_ => _.ID == _id);
 
             if (tutorRegisterSaveViewModel == null)
             {
                 var fileNames = certInputFiles.Select(_ => _.FileName).ToList();
                 var fileType = certInputFiles.Select(_ => Path.GetExtension(_.FileName)).ToList();
-                var fileIDs = certInputFiles.Select(_ => _id+_.FileName).ToList();
+                var fileIDs = certInputFiles.Select(_ => _id + _.FileName).ToList();
 
                 tutorRegisterSaveViewModel.CertFileName = fileNames;
-                tutorRegisterSaveViewModel.CertFileType= fileType;
+                tutorRegisterSaveViewModel.CertFileType = fileType;
                 tutorRegisterSaveViewModel.CertFileID = fileIDs;
             }
             var imagePaths = new List<string>();
@@ -338,14 +337,14 @@ namespace TutorAppAPI.Controllers
             {
                 foreach (var certFile in certInputFiles)
                 {
-                    var certFilePath = Path.Combine(uploadsFolder, _id+ certFile.FileName);
+                    var certFilePath = Path.Combine(uploadsFolder, _id + certFile.FileName);
                     using (var fileStream = new FileStream(certFilePath, FileMode.Create))
                     {
                         await certFile.CopyToAsync(fileStream);
                     }
                     imagePaths.Add("/uploads/temp/" + _id + certFile.FileName);
                 }
-                await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
+                await _context.Tutors.AddAsync(tutorRegisterSaveViewModel);
                 return Json(new { success = true, imagePaths });
             }
 
@@ -357,13 +356,13 @@ namespace TutorAppAPI.Controllers
         {
             var _id = Guid.Parse(HttpContext.Session.GetString("RegisterTutorID"));
 
-            var tutorRegisterSaveViewModel = _context.Tutors.Find<Tutors>(_ => _.ID == _id).FirstOrDefault();
+            var tutorRegisterSaveViewModel = await _context.Tutors.FirstOrDefaultAsync(_ => _.ID == _id);
 
             if (tutorRegisterSaveViewModel == null)
             {
 
             }
-            await _context.Tutors.ReplaceOneAsync(tl => tl.ID == tutorRegisterSaveViewModel.ID, tutorRegisterSaveViewModel);
+            await _context.Tutors.AddAsync(tutorRegisterSaveViewModel);
 
             return RedirectToAction("Index", "Home");
         }

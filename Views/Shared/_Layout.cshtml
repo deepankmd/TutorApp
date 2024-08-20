@@ -80,7 +80,7 @@
                                     @foreach (var notification in notifications)
                                     {
                                         <a asp-action="NotificationDetail" asp-controller="Notification"
-                                           asp-route-id="@notification._id"
+                                           asp-route-id="@notification.ID"
                                            asp-route-typeId="@notification.TypeID" asp-route-screenType="@notification.ScreenType"
                                         class="dropdown-item">
                                             <!-- Message Start -->

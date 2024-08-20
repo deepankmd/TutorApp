@@ -82,7 +82,7 @@
                 <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
                 <div class="card bg-light d-flex flex-fill">
                     <div class="card-header text-muted border-bottom-0">
-                            @assignment._id.ToString().Substring(assignment._id.ToString().Length - 7).ToUpper()
+                            @assignment.ID.ToString().Substring(assignment.ID.ToString().Length - 7).ToUpper()
                             <span class="">
                                 <small class="bg-danger">Urgent</small>
                             </span>
@@ -110,7 +110,7 @@
                                 @if (isTutor)
                                 {
                                     <button type="button" class="btn btn-primary" data-toggle="modal"
-                                            data-target="#createEditPopup" onclick="loadCreateForm('@assignment._id.ToString()')">
+                                            data-target="#createEditPopup" onclick="loadCreateForm('@assignment.ID.ToString()')">
                                         <i class="fas fa-comment"></i> Apply
                                     </button>
 
@@ -119,7 +119,7 @@
                                     <p>
                                         @if (assignment.IsVerified) {<i class="fas fa-anchor"></i>
                                             <small>Assignment Posted Sucessfully</small>
-                                            <a asp-controller="Assignment" asp-action="ViewApplicants" asp-route-id="@assignment._id.ToString()" class="btn btn-primary">
+                                            <a asp-controller="Assignment" asp-action="ViewApplicants" asp-route-id="@assignment.ID.ToString()" class="btn btn-primary">
                                                 <i class="fas fa-list-ol"></i>
                                                 <span class="badge badge-danger navbar-badge">2</span>View Applications
                                             </a>
@@ -136,7 +136,7 @@
                                     <a href="#" class="btn btn-sm btn-primary">
                                         <i class="fas fa-user"></i> Approve
                                     </a>
-                                    <a asp-controller="Assignment" asp-action="ViewApplicants" asp-route-id="@assignment._id.ToString()">View Applications </a>
+                                    <a asp-controller="Assignment" asp-action="ViewApplicants" asp-route-id="@assignment.ID.ToString()">View Applications </a>
                                 }                               
                         </div>
                     </div>

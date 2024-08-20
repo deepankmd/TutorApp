@@ -1,25 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using MongoDB.Driver;
+using Microsoft.EntityFrameworkCore;
 using TutorAppAPI.Models;
-using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
-
 public class TutorSchoolsController : Controller
 {
-    private readonly MongoContext _dbContext;
-    private readonly IRepository<TutorSchools> _repository;
+    //private readonly IRepository<TutorSchools> _repository;
+    private readonly MySqlContext _context;
 
-    public TutorSchoolsController(MongoContext dbContext, IRepository<TutorSchools> repository)
+    public TutorSchoolsController(MySqlContext context)
     {
-        _dbContext = dbContext;
-        _repository = repository;
+        _context = context;
     }
 
     // GET: TutorSchools/Index
     public async Task<IActionResult> Index()
     {
-        var tutorSchools = await _repository.GetAllAsync();
+        var tutorSchools = await _context.TutorSchools.ToListAsync();
         return View(tutorSchools);
     }
 
@@ -36,7 +32,7 @@ public class TutorSchoolsController : Controller
         if (ModelState.IsValid)
         {
             tutorSchool.ID = Guid.NewGuid();
-            await _repository.AddAsync(tutorSchool);
+            await _context.TutorSchools.AddAsync(tutorSchool);
             return RedirectToAction(nameof(Index));
         }
         return PartialView("Create", tutorSchool);
@@ -50,7 +46,9 @@ public class TutorSchoolsController : Controller
             return NotFound();
         }
 
-        var tutorSchool = await _repository.GetByIdAsync(Guid.Parse(id));
+        var tutorSchool = await _context.TutorSchools.FindAsync(Guid.Parse(id));
+        _context.TutorSchools.Update(tutorSchool);
+        await _context.SaveChangesAsync();
         if (tutorSchool == null) return NotFound();
 
         return PartialView("Edit", tutorSchool);
@@ -62,7 +60,8 @@ public class TutorSchoolsController : Controller
     {
         if (ModelState.IsValid)
         {
-            await _repository.UpdateAsync(tutorSchool);
+            _context.TutorSchools.Update(tutorSchool);
+            await _context.SaveChangesAsync(); 
             return RedirectToAction(nameof(Index));
         }
         return PartialView("Edit", tutorSchool);
@@ -72,8 +71,9 @@ public class TutorSchoolsController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
-        var level = await _repository.GetByIdAsync(Guid.Parse(id));
-        if (level == null) return NotFound();
+        var tutorSchool = await _context.TutorSchools.FindAsync(Guid.Parse(id));
+        _context.TutorSchools.Remove(tutorSchool);
+        await _context.SaveChangesAsync();
         return RedirectToAction(nameof(Index));
     }
 }

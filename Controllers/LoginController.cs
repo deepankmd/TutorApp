@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using TutorAppAPI.Services;
 using TutorAppAPI.ViewModel;
-using MongoDB.Driver;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
 using Microsoft.EntityFrameworkCore;

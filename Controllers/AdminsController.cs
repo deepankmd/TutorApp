@@ -127,11 +127,9 @@ namespace TutorAppAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Admins admin)
         {
-            var alladminRecord = await _context.Admins.ToListAsync();
-            var adminRecord = alladminRecord.Where(a => a.Email == admin.Email && a.Password == admin.Password);
+            var adminRecord = await _context.Admins.Where(a => a.Email == admin.Email && a.Password == admin.Password).FirstOrDefaultAsync();
 
-
-            if (adminRecord.FirstOrDefault() != null)
+            if (adminRecord != null)
             {
                 var claims = new List<Claim>
             {

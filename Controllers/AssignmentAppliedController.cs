@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
-using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
 using TutorAppAPI.ViewModel;
 

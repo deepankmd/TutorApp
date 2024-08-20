@@ -1,26 +1,26 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TutorAppAPI.Models;
 using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
 
 public class TutorSubjectController : Controller
 {
-    private readonly MongoContext _dbContext;
-    private readonly IRepository<TutorSubject> _repository;
-    private readonly IRepository<TutorLevel> _tutorLevelRepository;
+    //private readonly MongoContext _dbContext;
+    //private readonly IRepository<TutorSubject> _repository;
+    //private readonly IRepository<TutorLevel> _tutorLevelRepository;
+    private readonly MySqlContext _context;
 
-    public TutorSubjectController(MongoContext dbContext, IRepository<TutorSubject> repository, IRepository<TutorLevel> tutorLevelRepository)
+    public TutorSubjectController(MySqlContext context)
     {
-        _dbContext = dbContext;
-        _repository = repository;
-        _tutorLevelRepository = tutorLevelRepository;
+        _context = context;
     }
 
     // GET: TutorSubject/Index
     public async Task<IActionResult> Index()
     {
-        var entity = await _repository.GetAllAsync();
+        var entity = await _context.TutorSubject.ToListAsync();
         return View(entity);
     }
 
@@ -38,7 +38,7 @@ public class TutorSubjectController : Controller
         if (ModelState.IsValid)
         {
             tutorSubject.ID = Guid.NewGuid();
-            await _repository.AddAsync(tutorSubject);
+            await _context.TutorSubject.AddAsync(tutorSubject);
             return RedirectToAction(nameof(Index));
         }
 
@@ -54,7 +54,7 @@ public class TutorSubjectController : Controller
             return NotFound();
         }
 
-        var tutorSubject = await _repository.GetByIdAsync(Guid.Parse(id));
+        var tutorSubject = await _context.TutorSubject.FindAsync(Guid.Parse(id));
         if (tutorSubject == null) return NotFound();
 
         await PopulateTutorLevels();
@@ -73,7 +73,7 @@ public class TutorSubjectController : Controller
         if (ModelState.IsValid)
         {
             tutorSubject.ID = Guid.Parse(id);
-            await _repository.UpdateAsync(tutorSubject);
+            _context.TutorSubject.Update(tutorSubject);
             return RedirectToAction(nameof(Index));
         }
 
@@ -85,14 +85,14 @@ public class TutorSubjectController : Controller
     [HttpPost]
     public async Task<IActionResult> Delete(string id)
     {
-        var level = await _repository.GetByIdAsync(Guid.Parse(id));
+        var level = await _context.TutorSubject.FindAsync(Guid.Parse(id));
         if (level == null) return NotFound();
         return RedirectToAction(nameof(Index));
     }
 
     private async Task PopulateTutorLevels()
     {
-        var tutorLevels = await _tutorLevelRepository.GetAllAsync();
+        var tutorLevels = await _context.TutorLevel.ToListAsync();
 
         var selectedItemsTuterLevel = tutorLevels.Select(_ => new SelectList(new List<SelectListItem>
         {

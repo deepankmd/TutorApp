@@ -1,12 +1,10 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Bson;
-using TutorAppAPI.Models;
+﻿using TutorAppAPI.Models;
 
 namespace TutorAppAPI.ViewModel
 {
     public class NotificationViewModel
     {
-        public string _id { get; set; }
+        public Guid ID { get; set; }
         public string UserName { get; set; }
         public string TypeID { get; set; }
         public string Email { get; set; }
