@@ -29,7 +29,7 @@
                     <b>Student Name</b> <a class="float-right">@Model.StudentName</a>
                 </li>
             </ul>
-            <a href="@Url.Action("Edit", "ParentDetails", new { id = Model._id.ToString() })" class="btn btn-primary btn-block"><b>Update</b></a>
+            <a href="@Url.Action("Edit", "ParentDetails", new { id = Model.ID.ToString() })" class="btn btn-primary btn-block"><b>Update</b></a>
         </div>
         <!-- /.card-body -->
     </div>
@@ -126,7 +126,7 @@
                         @using (Html.BeginForm())
                         {
                             @Html.AntiForgeryToken()
-                            @Html.HiddenFor(model => model._id)
+                            @Html.HiddenFor(model => model.ID)
 
                             <div class="form-group">
                                 @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label" })

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TutorAppAPI.Helpers;
 using TutorAppAPI.Models;
-using TutorAppAPI.Repository.IRepository;
 using TutorAppAPI.Services;
 using TutorAppAPI.ViewModel;
 
@@ -30,7 +29,12 @@ namespace TutorAppAPI.Controllers
             if (HttpContext.Session != null)
             {
                 string userID = HttpContext.Session.GetString(UserConstants.UserID);
-                var parentDetails = await _context.ParentDetails.FindAsync(Guid.Parse(userID));
+                ParentDetails parentDetails;
+                if (HttpContext.Session.GetString(UserConstants.UserID) != null)
+                {
+                   parentDetails = await _context.ParentDetails.FindAsync(Guid.Parse(userID));
+                }
+                parentDetails = new ParentDetails();
                 return View(parentDetails);
             }
             else
@@ -52,7 +56,8 @@ namespace TutorAppAPI.Controllers
             if (ModelState.IsValid)
             {
                 await _context.ParentDetails.AddAsync(parentDetails);
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Login");
             }
             PopulateDropDowns();
 
@@ -77,9 +82,10 @@ namespace TutorAppAPI.Controllers
                 CreatedDate = DateTime.UtcNow,
             };
             await _context.Notification.AddAsync(notification);
+            await _context.SaveChangesAsync();
 
             //await NotificationService.SendEmailAsync(parentDetails.Email, subject, emailMessage);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Login");
         }
 
         public async Task<IActionResult> Edit(string id)

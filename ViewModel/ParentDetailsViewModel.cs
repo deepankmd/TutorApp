@@ -2,7 +2,7 @@
 {
     public class ParentDetailsViewModel
     {
-        public string _id { get; set; }
+        public string ID { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public long Mobile { get; set; }
